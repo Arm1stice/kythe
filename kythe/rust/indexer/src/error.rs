@@ -37,11 +37,8 @@ quick_error! {
             display("Failed to parse Protobuf: {}", err)
         }
         // The KytheWriter encounters an error
-        WriterError {}
-        // An unknown error occured
-        UnknownError(err: Box<dyn std::error::Error>) {
-            from()
-            display("An unknown error occurred: {}", err)
+        WriterError(err: ProtobufError) {
+            display("Writer encountered an error: {}", err)
         }
     }
 }
