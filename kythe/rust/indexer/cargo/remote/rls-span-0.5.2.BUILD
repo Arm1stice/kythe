@@ -12,7 +12,7 @@ package(default_visibility = [
 ])
 
 licenses([
-  "unencumbered", # Unlicense from expression "Unlicense OR MIT"
+  "notice", # Apache-2.0 from expression "Apache-2.0 OR MIT"
 ])
 
 load(
@@ -23,22 +23,22 @@ load(
 )
 
 
-# Unsupported target "bench" with type "bench" omitted
-# Unsupported target "build-script-build" with type "custom-build" omitted
 
 rust_library(
-    name = "byteorder",
+    name = "rls_span",
     crate_type = "lib",
     deps = [
+        "@raze__serde__1_0_114//:serde",
     ],
     srcs = glob(["**/*.rs"]),
     crate_root = "src/lib.rs",
-    edition = "2015",
+    edition = "2018",
     rustc_flags = [
         "--cap-lints=allow",
     ],
-    version = "1.3.4",
+    version = "0.5.2",
     crate_features = [
+        "default",
     ],
 )
 

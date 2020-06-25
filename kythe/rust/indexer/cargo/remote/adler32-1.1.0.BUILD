@@ -12,7 +12,7 @@ package(default_visibility = [
 ])
 
 licenses([
-  "notice", # MIT from expression "MIT OR Apache-2.0"
+  "notice", # Zlib from expression "Zlib"
 ])
 
 load(
@@ -25,10 +25,9 @@ load(
 
 
 rust_library(
-    name = "rustc_version",
+    name = "adler32",
     crate_type = "lib",
     deps = [
-        "@raze__semver__0_9_0//:semver",
     ],
     srcs = glob(["**/*.rs"]),
     crate_root = "src/lib.rs",
@@ -36,8 +35,11 @@ rust_library(
     rustc_flags = [
         "--cap-lints=allow",
     ],
-    version = "0.2.3",
+    version = "1.1.0",
     crate_features = [
+        "default",
+        "std",
     ],
 )
 
+# Unsupported target "bench" with type "bench" omitted

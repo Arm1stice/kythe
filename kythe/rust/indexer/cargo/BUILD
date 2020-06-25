@@ -17,6 +17,10 @@ alias(
     actual = "@raze__quick_error__1_2_3//:quick_error",
 )
 alias(
+    name = "rls_data",
+    actual = "@raze__rls_data__0_19_0//:rls_data",
+)
+alias(
     name = "zip",
     actual = "@raze__zip__0_5_6//:zip",
 )

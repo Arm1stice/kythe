@@ -12,7 +12,7 @@ package(default_visibility = [
 ])
 
 licenses([
-  "notice", # Apache-2.0 from expression "Apache-2.0 OR MIT"
+  "notice", # MIT from expression "MIT OR Apache-2.0"
 ])
 
 load(
@@ -26,10 +26,9 @@ load(
 # Unsupported target "build-script-build" with type "custom-build" omitted
 
 rust_library(
-    name = "encoding_rs",
+    name = "serde",
     crate_type = "lib",
     deps = [
-        "@raze__cfg_if__0_1_9//:cfg_if",
     ],
     srcs = glob(["**/*.rs"]),
     crate_root = "src/lib.rs",
@@ -37,8 +36,10 @@ rust_library(
     rustc_flags = [
         "--cap-lints=allow",
     ],
-    version = "0.8.23",
+    version = "1.0.114",
     crate_features = [
+        "default",
+        "std",
     ],
 )
 

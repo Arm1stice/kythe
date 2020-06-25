@@ -14,6 +14,7 @@ rust_library(
     "//kythe/rust/indexer/cargo:protobuf",
     "//kythe/rust/indexer/cargo:quick_error",
     "//kythe/rust/indexer/cargo:zip",
+    "//kythe/rust/indexer/cargo:rls_data",
   ] + PROTO_COMPILE_DEPS,
   edition = "2018",
 )

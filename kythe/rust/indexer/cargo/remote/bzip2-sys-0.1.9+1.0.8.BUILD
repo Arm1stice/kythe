@@ -42,7 +42,6 @@ cargo_build_script(
     crate_features = [
     ],
     data = glob(["**"]),
-    tags = ["no-sandbox"],
     version = "0.1.9+1.0.8",
     visibility = ["//visibility:private"],
 )

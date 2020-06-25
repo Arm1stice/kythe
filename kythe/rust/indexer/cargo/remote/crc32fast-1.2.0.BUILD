@@ -30,7 +30,7 @@ rust_library(
     name = "crc32fast",
     crate_type = "lib",
     deps = [
-        "@raze__cfg_if__0_1_9//:cfg_if",
+        "@raze__cfg_if__0_1_10//:cfg_if",
     ],
     srcs = glob(["**/*.rs"]),
     crate_root = "src/lib.rs",

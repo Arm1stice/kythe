@@ -28,7 +28,7 @@ rust_library(
     name = "miniz_oxide",
     crate_type = "lib",
     deps = [
-        "@raze__adler32__1_0_4//:adler32",
+        "@raze__adler32__1_1_0//:adler32",
     ],
     srcs = glob(["**/*.rs"]),
     crate_root = "src/lib.rs",

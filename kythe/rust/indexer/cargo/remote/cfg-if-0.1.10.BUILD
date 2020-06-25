@@ -31,11 +31,11 @@ rust_library(
     ],
     srcs = glob(["**/*.rs"]),
     crate_root = "src/lib.rs",
-    edition = "2015",
+    edition = "2018",
     rustc_flags = [
         "--cap-lints=allow",
     ],
-    version = "0.1.9",
+    version = "0.1.10",
     crate_features = [
     ],
 )
