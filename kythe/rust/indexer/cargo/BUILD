@@ -9,6 +9,10 @@ licenses([
   "notice" # See individual crates for specific licenses
 ])
 alias(
+    name = "anyhow",
+    actual = "@raze__anyhow__1_0_31//:anyhow",
+)
+alias(
     name = "protobuf",
     actual = "@raze__protobuf__2_8_2//:protobuf",
 )
@@ -19,6 +23,10 @@ alias(
 alias(
     name = "rls_data",
     actual = "@raze__rls_data__0_19_0//:rls_data",
+)
+alias(
+    name = "tempfile",
+    actual = "@raze__tempfile__3_1_0//:tempfile",
 )
 alias(
     name = "zip",

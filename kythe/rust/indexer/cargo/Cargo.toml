@@ -27,6 +27,8 @@ protobuf = "=2.8.2"
 quick-error = "1.2.3"
 zip = "0.5.6"
 rls-data = "0.19.0"
+tempfile = "3.1.0"
+anyhow = "1.0"
 
 [raze]
 workspace_path = "//kythe/rust/indexer/cargo"

@@ -23,33 +23,28 @@ load(
 )
 
 
-# Unsupported target "build-script-build" with type "custom-build" omitted
+# Unsupported target "namedtempfile" with type "test" omitted
+# Unsupported target "spooled" with type "test" omitted
+# Unsupported target "tempdir" with type "test" omitted
 
 rust_library(
-    name = "winapi",
+    name = "tempfile",
     crate_type = "lib",
     deps = [
+        "@raze__cfg_if__0_1_10//:cfg_if",
+        "@raze__libc__0_2_71//:libc",
+        "@raze__rand__0_7_3//:rand",
+        "@raze__remove_dir_all__0_5_3//:remove_dir_all",
     ],
     srcs = glob(["**/*.rs"]),
     crate_root = "src/lib.rs",
-    edition = "2015",
+    edition = "2018",
     rustc_flags = [
         "--cap-lints=allow",
     ],
-    version = "0.3.8",
+    version = "3.1.0",
     crate_features = [
-        "errhandlingapi",
-        "fileapi",
-        "handleapi",
-        "minwinbase",
-        "minwindef",
-        "ntdef",
-        "profileapi",
-        "std",
-        "sysinfoapi",
-        "timezoneapi",
-        "winbase",
-        "winerror",
     ],
 )
 
+# Unsupported target "tempfile" with type "test" omitted

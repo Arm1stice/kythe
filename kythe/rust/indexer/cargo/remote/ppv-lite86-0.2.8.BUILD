@@ -23,33 +23,22 @@ load(
 )
 
 
-# Unsupported target "build-script-build" with type "custom-build" omitted
 
 rust_library(
-    name = "winapi",
+    name = "ppv_lite86",
     crate_type = "lib",
     deps = [
     ],
     srcs = glob(["**/*.rs"]),
     crate_root = "src/lib.rs",
-    edition = "2015",
+    edition = "2018",
     rustc_flags = [
         "--cap-lints=allow",
     ],
-    version = "0.3.8",
+    version = "0.2.8",
     crate_features = [
-        "errhandlingapi",
-        "fileapi",
-        "handleapi",
-        "minwinbase",
-        "minwindef",
-        "ntdef",
-        "profileapi",
+        "simd",
         "std",
-        "sysinfoapi",
-        "timezoneapi",
-        "winbase",
-        "winerror",
     ],
 )
 

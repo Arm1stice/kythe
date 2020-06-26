@@ -23,33 +23,21 @@ load(
 )
 
 
-# Unsupported target "build-script-build" with type "custom-build" omitted
 
 rust_library(
-    name = "winapi",
+    name = "rand_hc",
     crate_type = "lib",
     deps = [
+        "@raze__rand_core__0_5_1//:rand_core",
     ],
     srcs = glob(["**/*.rs"]),
     crate_root = "src/lib.rs",
-    edition = "2015",
+    edition = "2018",
     rustc_flags = [
         "--cap-lints=allow",
     ],
-    version = "0.3.8",
+    version = "0.2.0",
     crate_features = [
-        "errhandlingapi",
-        "fileapi",
-        "handleapi",
-        "minwinbase",
-        "minwindef",
-        "ntdef",
-        "profileapi",
-        "std",
-        "sysinfoapi",
-        "timezoneapi",
-        "winbase",
-        "winerror",
     ],
 )
 

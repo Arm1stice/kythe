@@ -24,32 +24,25 @@ load(
 
 
 # Unsupported target "build-script-build" with type "custom-build" omitted
+# Unsupported target "common" with type "test" omitted
 
 rust_library(
-    name = "winapi",
+    name = "getrandom",
     crate_type = "lib",
     deps = [
+        "@raze__cfg_if__0_1_10//:cfg_if",
+        "@raze__libc__0_2_71//:libc",
     ],
     srcs = glob(["**/*.rs"]),
     crate_root = "src/lib.rs",
-    edition = "2015",
+    edition = "2018",
     rustc_flags = [
         "--cap-lints=allow",
     ],
-    version = "0.3.8",
+    version = "0.1.14",
     crate_features = [
-        "errhandlingapi",
-        "fileapi",
-        "handleapi",
-        "minwinbase",
-        "minwindef",
-        "ntdef",
-        "profileapi",
         "std",
-        "sysinfoapi",
-        "timezoneapi",
-        "winbase",
-        "winerror",
     ],
 )
 
+# Unsupported target "mod" with type "bench" omitted

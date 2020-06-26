@@ -26,6 +26,15 @@ def raze_fetch_remote_crates():
     )
 
     _new_http_archive(
+        name = "raze__anyhow__1_0_31",
+        url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/anyhow/anyhow-1.0.31.crate",
+        type = "tar.gz",
+        sha256 = "85bb70cc08ec97ca5450e6eba421deeea5f172c0fc61f78b5357b2a8e8be195f",
+        strip_prefix = "anyhow-1.0.31",
+        build_file = Label("//kythe/rust/indexer/cargo/remote:anyhow-1.0.31.BUILD"),
+    )
+
+    _new_http_archive(
         name = "raze__bzip2__0_3_3",
         url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/bzip2/bzip2-0.3.3.crate",
         type = "tar.gz",
@@ -80,6 +89,15 @@ def raze_fetch_remote_crates():
     )
 
     _new_http_archive(
+        name = "raze__getrandom__0_1_14",
+        url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/getrandom/getrandom-0.1.14.crate",
+        type = "tar.gz",
+        sha256 = "7abc8dd8451921606d809ba32e95b6111925cd2906060d2dcc29c070220503eb",
+        strip_prefix = "getrandom-0.1.14",
+        build_file = Label("//kythe/rust/indexer/cargo/remote:getrandom-0.1.14.BUILD"),
+    )
+
+    _new_http_archive(
         name = "raze__libc__0_2_71",
         url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/libc/libc-0.2.71.crate",
         type = "tar.gz",
@@ -116,6 +134,15 @@ def raze_fetch_remote_crates():
     )
 
     _new_http_archive(
+        name = "raze__ppv_lite86__0_2_8",
+        url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/ppv-lite86/ppv-lite86-0.2.8.crate",
+        type = "tar.gz",
+        sha256 = "237a5ed80e274dbc66f86bd59c1e25edc039660be53194b5fe0a482e0f2612ea",
+        strip_prefix = "ppv-lite86-0.2.8",
+        build_file = Label("//kythe/rust/indexer/cargo/remote:ppv-lite86-0.2.8.BUILD"),
+    )
+
+    _new_http_archive(
         name = "raze__protobuf__2_8_2",
         url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/protobuf/protobuf-2.8.2.crate",
         type = "tar.gz",
@@ -137,6 +164,60 @@ def raze_fetch_remote_crates():
         sha256 = "a1d01941d82fa2ab50be1e79e6714289dd7cde78eba4c074bc5a4374f650dfe0",
         strip_prefix = "quick-error-1.2.3",
         build_file = Label("//kythe/rust/indexer/cargo/remote:quick-error-1.2.3.BUILD"),
+    )
+
+    _new_http_archive(
+        name = "raze__rand__0_7_3",
+        url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/rand/rand-0.7.3.crate",
+        type = "tar.gz",
+        sha256 = "6a6b1679d49b24bbfe0c803429aa1874472f50d9b363131f0e89fc356b544d03",
+        strip_prefix = "rand-0.7.3",
+        build_file = Label("//kythe/rust/indexer/cargo/remote:rand-0.7.3.BUILD"),
+    )
+
+    _new_http_archive(
+        name = "raze__rand_chacha__0_2_2",
+        url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/rand_chacha/rand_chacha-0.2.2.crate",
+        type = "tar.gz",
+        sha256 = "f4c8ed856279c9737206bf725bf36935d8666ead7aa69b52be55af369d193402",
+        strip_prefix = "rand_chacha-0.2.2",
+        build_file = Label("//kythe/rust/indexer/cargo/remote:rand_chacha-0.2.2.BUILD"),
+    )
+
+    _new_http_archive(
+        name = "raze__rand_core__0_5_1",
+        url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/rand_core/rand_core-0.5.1.crate",
+        type = "tar.gz",
+        sha256 = "90bde5296fc891b0cef12a6d03ddccc162ce7b2aff54160af9338f8d40df6d19",
+        strip_prefix = "rand_core-0.5.1",
+        build_file = Label("//kythe/rust/indexer/cargo/remote:rand_core-0.5.1.BUILD"),
+    )
+
+    _new_http_archive(
+        name = "raze__rand_hc__0_2_0",
+        url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/rand_hc/rand_hc-0.2.0.crate",
+        type = "tar.gz",
+        sha256 = "ca3129af7b92a17112d59ad498c6f81eaf463253766b90396d39ea7a39d6613c",
+        strip_prefix = "rand_hc-0.2.0",
+        build_file = Label("//kythe/rust/indexer/cargo/remote:rand_hc-0.2.0.BUILD"),
+    )
+
+    _new_http_archive(
+        name = "raze__redox_syscall__0_1_56",
+        url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/redox_syscall/redox_syscall-0.1.56.crate",
+        type = "tar.gz",
+        sha256 = "2439c63f3f6139d1b57529d16bc3b8bb855230c8efcc5d3a896c8bea7c3b1e84",
+        strip_prefix = "redox_syscall-0.1.56",
+        build_file = Label("//kythe/rust/indexer/cargo/remote:redox_syscall-0.1.56.BUILD"),
+    )
+
+    _new_http_archive(
+        name = "raze__remove_dir_all__0_5_3",
+        url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/remove_dir_all/remove_dir_all-0.5.3.crate",
+        type = "tar.gz",
+        sha256 = "3acd125665422973a33ac9d3dd2df85edad0f4ae9b00dafb1a05e43a9f5ef8e7",
+        strip_prefix = "remove_dir_all-0.5.3",
+        build_file = Label("//kythe/rust/indexer/cargo/remote:remove_dir_all-0.5.3.BUILD"),
     )
 
     _new_http_archive(
@@ -167,12 +248,30 @@ def raze_fetch_remote_crates():
     )
 
     _new_http_archive(
+        name = "raze__tempfile__3_1_0",
+        url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/tempfile/tempfile-3.1.0.crate",
+        type = "tar.gz",
+        sha256 = "7a6e24d9338a0a5be79593e2fa15a648add6138caa803e2d5bc782c371732ca9",
+        strip_prefix = "tempfile-3.1.0",
+        build_file = Label("//kythe/rust/indexer/cargo/remote:tempfile-3.1.0.BUILD"),
+    )
+
+    _new_http_archive(
         name = "raze__time__0_1_43",
         url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/time/time-0.1.43.crate",
         type = "tar.gz",
         sha256 = "ca8a50ef2360fbd1eeb0ecd46795a87a19024eb4b53c5dc916ca1fd95fe62438",
         strip_prefix = "time-0.1.43",
         build_file = Label("//kythe/rust/indexer/cargo/remote:time-0.1.43.BUILD"),
+    )
+
+    _new_http_archive(
+        name = "raze__wasi__0_9_0_wasi_snapshot_preview1",
+        url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/wasi/wasi-0.9.0+wasi-snapshot-preview1.crate",
+        type = "tar.gz",
+        sha256 = "cccddf32554fecc6acb585f82a32a72e28b48f8c4c1883ddfeeeaa96f7d8e519",
+        strip_prefix = "wasi-0.9.0+wasi-snapshot-preview1",
+        build_file = Label("//kythe/rust/indexer/cargo/remote:wasi-0.9.0+wasi-snapshot-preview1.BUILD"),
     )
 
     _new_http_archive(

@@ -12,7 +12,7 @@ package(default_visibility = [
 ])
 
 licenses([
-  "notice", # MIT from expression "MIT OR Apache-2.0"
+  "notice", # MIT from expression "MIT"
 ])
 
 load(
@@ -23,10 +23,13 @@ load(
 )
 
 
-# Unsupported target "build-script-build" with type "custom-build" omitted
+alias(
+  name = "redox_syscall",
+  actual = ":syscall",
+)
 
 rust_library(
-    name = "winapi",
+    name = "syscall",
     crate_type = "lib",
     deps = [
     ],
@@ -36,20 +39,8 @@ rust_library(
     rustc_flags = [
         "--cap-lints=allow",
     ],
-    version = "0.3.8",
+    version = "0.1.56",
     crate_features = [
-        "errhandlingapi",
-        "fileapi",
-        "handleapi",
-        "minwinbase",
-        "minwindef",
-        "ntdef",
-        "profileapi",
-        "std",
-        "sysinfoapi",
-        "timezoneapi",
-        "winbase",
-        "winerror",
     ],
 )
 
