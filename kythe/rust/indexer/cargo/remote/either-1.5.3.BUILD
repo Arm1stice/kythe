@@ -22,45 +22,20 @@ load(
     "rust_test",
 )
 
-load(
-    "@io_bazel_rules_rust//cargo:cargo_build_script.bzl",
-    "cargo_build_script",
-)
-
-cargo_build_script(
-    name = "bzip2_sys_build_script",
-    srcs = glob(["**/*.rs"]),
-    crate_root = "build.rs",
-    edition = "2015",
-    deps = [
-        "@raze__cc__1_0_55//:cc",
-        "@raze__pkg_config__0_3_17//:pkg_config",
-    ],
-    rustc_flags = [
-        "--cap-lints=allow",
-    ],
-    crate_features = [
-    ],
-    data = glob(["**"]),
-    version = "0.1.9+1.0.8",
-    visibility = ["//visibility:private"],
-)
 
 
 rust_library(
-    name = "bzip2_sys",
+    name = "either",
     crate_type = "lib",
     deps = [
-        ":bzip2_sys_build_script",
-        "@raze__libc__0_2_71//:libc",
     ],
     srcs = glob(["**/*.rs"]),
-    crate_root = "lib.rs",
+    crate_root = "src/lib.rs",
     edition = "2015",
     rustc_flags = [
         "--cap-lints=allow",
     ],
-    version = "0.1.9+1.0.8",
+    version = "1.5.3",
     crate_features = [
     ],
 )

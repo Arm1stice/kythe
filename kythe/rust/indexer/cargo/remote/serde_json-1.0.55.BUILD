@@ -22,46 +22,27 @@ load(
     "rust_test",
 )
 
-load(
-    "@io_bazel_rules_rust//cargo:cargo_build_script.bzl",
-    "cargo_build_script",
-)
 
-cargo_build_script(
-    name = "bzip2_sys_build_script",
-    srcs = glob(["**/*.rs"]),
-    crate_root = "build.rs",
-    edition = "2015",
-    deps = [
-        "@raze__cc__1_0_55//:cc",
-        "@raze__pkg_config__0_3_17//:pkg_config",
-    ],
-    rustc_flags = [
-        "--cap-lints=allow",
-    ],
-    crate_features = [
-    ],
-    data = glob(["**"]),
-    version = "0.1.9+1.0.8",
-    visibility = ["//visibility:private"],
-)
-
+# Unsupported target "build-script-build" with type "custom-build" omitted
 
 rust_library(
-    name = "bzip2_sys",
+    name = "serde_json",
     crate_type = "lib",
     deps = [
-        ":bzip2_sys_build_script",
-        "@raze__libc__0_2_71//:libc",
+        "@raze__itoa__0_4_6//:itoa",
+        "@raze__ryu__1_0_5//:ryu",
+        "@raze__serde__1_0_114//:serde",
     ],
     srcs = glob(["**/*.rs"]),
-    crate_root = "lib.rs",
-    edition = "2015",
+    crate_root = "src/lib.rs",
+    edition = "2018",
     rustc_flags = [
         "--cap-lints=allow",
     ],
-    version = "0.1.9+1.0.8",
+    version = "1.0.55",
     crate_features = [
+        "default",
+        "std",
     ],
 )
 

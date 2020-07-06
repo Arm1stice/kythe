@@ -104,7 +104,7 @@ impl KzipFileProvider {
             let file = self.zip_archive.by_index(i)?;
             if file.is_file() && file.name().contains("/pbunits/") {
                 let mut reader = BufReader::new(file);
-                let bundle = protobuf::parse_from_reader::<CompilationBundle>(&mut reader)?;
+                let bundle = protobuf::parse_from_reader::<IndexedCompilation>(&mut reader)?;
                 compilation_units.push(bundle.get_unit().clone());
             }
         }

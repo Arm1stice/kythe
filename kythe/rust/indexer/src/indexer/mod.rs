@@ -13,18 +13,19 @@
 // limitations under the License.
 
 use crate::error::KytheError;
-use crate::writer::KytheWriter;
+use crate::writer::{KytheWriter, StreamWriter};
 pub mod analysis;
+pub mod util;
 
 use analysis_rust_proto::*;
 use std::path::PathBuf;
 
 pub struct KytheIndexer<'a> {
-    writer: &'a dyn KytheWriter,
+    writer: &'a mut dyn KytheWriter,
 }
 
 impl<'a> KytheIndexer<'a> {
-    pub fn new(writer: &'a dyn KytheWriter) -> Self {
+    pub fn new(writer: &'a mut dyn KytheWriter) -> Self {
         Self { writer }
     }
 
@@ -33,17 +34,20 @@ impl<'a> KytheIndexer<'a> {
         unit: &CompilationUnit,
         root_dir: &PathBuf,
     ) -> Result<(), KytheError> {
-        let cu_args = unit.get_argument();
-        let mut args: Vec<String> = Vec::new();
-        for (index, arg) in cu_args.iter().enumerate() {
-            if arg == "" {
-                // The empty string must be first argument
-                args = cu_args[index+1..cu_args.len()].to_vec();
-                break;
-            }
-        }
-
-        let _analysis = analysis::generate_analysis(args, &root_dir)?;
+        // First, create file nodes for all of the source files in the CompilationUnit
+        util::generate_file_nodes(unit, self.writer, root_dir)?;
+        self.writer.flush();
+        // Analysis files are extracted to the analysis folder inside of the root
+        // directory
+        // let analysis = analysis::generate_analysis(&root_dir.join("analysis"));
+        // let c = analysis.get(0).unwrap();
+        // println!("{}", c.id.name);
+        // let crate_analysis = &c.analysis;
+        // let defs = &crate_analysis.defs;
+        // println!("==Definitions==");
+        // for def in defs {
+        //     println!("{}", def.name);
+        // }
         Ok(())
     }
 }

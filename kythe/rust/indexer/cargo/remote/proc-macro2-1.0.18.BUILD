@@ -22,12 +22,40 @@ load(
     "rust_test",
 )
 
+load(
+    "@io_bazel_rules_rust//cargo:cargo_build_script.bzl",
+    "cargo_build_script",
+)
 
+cargo_build_script(
+    name = "proc_macro2_build_script",
+    srcs = glob(["**/*.rs"]),
+    crate_root = "build.rs",
+    edition = "2018",
+    deps = [
+    ],
+    rustc_flags = [
+        "--cap-lints=allow",
+    ],
+    crate_features = [
+      "default",
+      "proc-macro",
+    ],
+    data = glob(["**"]),
+    version = "1.0.18",
+    visibility = ["//visibility:private"],
+)
+
+# Unsupported target "comments" with type "test" omitted
+# Unsupported target "features" with type "test" omitted
+# Unsupported target "marker" with type "test" omitted
 
 rust_library(
-    name = "cc",
+    name = "proc_macro2",
     crate_type = "lib",
     deps = [
+        ":proc_macro2_build_script",
+        "@raze__unicode_xid__0_2_1//:unicode_xid",
     ],
     srcs = glob(["**/*.rs"]),
     crate_root = "src/lib.rs",
@@ -35,30 +63,10 @@ rust_library(
     rustc_flags = [
         "--cap-lints=allow",
     ],
-    version = "1.0.54",
+    version = "1.0.18",
     crate_features = [
-    ],
-)
-
-# Unsupported target "cc_env" with type "test" omitted
-# Unsupported target "cflags" with type "test" omitted
-# Unsupported target "cxxflags" with type "test" omitted
-rust_binary(
-    # Prefix bin name to disambiguate from (probable) collision with lib name
-    # N.B.: The exact form of this is subject to change.
-    name = "cargo_bin_gcc_shim",
-    deps = [
-        # Binaries get an implicit dependency on their crate's lib
-        ":cc",
-    ],
-    srcs = glob(["**/*.rs"]),
-    crate_root = "src/bin/gcc-shim.rs",
-    edition = "2018",
-    rustc_flags = [
-        "--cap-lints=allow",
-    ],
-    version = "1.0.54",
-    crate_features = [
+        "default",
+        "proc-macro",
     ],
 )
 

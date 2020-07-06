@@ -19,10 +19,17 @@ use kythe_rust_indexer::providers::KzipFileProvider;
 use kythe_rust_indexer::{indexer::KytheIndexer, writer::StreamWriter};
 
 use anyhow::{Context, Result};
-use std::{env, fs::File, path::{Path, PathBuf}};
+use std::{
+    env,
+    fs::File,
+    path::{Path, PathBuf},
+};
 use tempfile::tempdir;
 
 fn main() -> Result<()> {
+    // util::generate_cu();
+    // std::process::exit(0);
+
     // Accepts kzip path as an argument
     // Calls indexer on each compilation unit
     // Returns 0 if ok or 1 if error
@@ -41,14 +48,20 @@ fn main() -> Result<()> {
         .get_compilation_units()
         .context("Failed to get compilation units from kzip")?;
 
+    // Create instances of StreamWriter and KytheIndexer
     let mut stdout_writer = std::io::stdout();
-    let writer = StreamWriter::new(&mut stdout_writer);
-    let mut indexer = KytheIndexer::new(&writer);
+    let mut writer = StreamWriter::new(&mut stdout_writer);
+    let mut indexer = KytheIndexer::new(&mut writer);
+
     for unit in compilation_units {
-        Create a temporary directory to store required files
+        // Create a temporary directory to store required files
         let temp_dir = tempdir().context("Couldn't create temporary directory")?;
         let temp_path = PathBuf::new().join(temp_dir.path());
+
+        // Extract all of the files from the kzip into the temporary directory
         util::extract_from_kzip(&unit, &temp_path, &mut kzip_provider)?;
+
+        // Index the CompilationUnit
         indexer.index_cu(&unit, &temp_path);
     }
     Ok(())
