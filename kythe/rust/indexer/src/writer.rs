@@ -30,6 +30,14 @@ pub trait KytheWriter {
     /// If the writer fails to write the entry to output, a
     /// [WriterError][KytheError::WriterError] will be returned.
     fn write_entry(&mut self, entry: Entry) -> Result<(), KytheError>;
+
+    /// Flushes the CodedOutputStream buffer to output
+    ///
+    /// # Errors
+    ///
+    /// If an error occurs while flushing, a [KytheError::WriterError] will be
+    /// returned.
+    fn flush(&mut self) -> Result<(), KytheError>;
 }
 
 /// A [KytheWriter] that writes entries to a [CodedOutputStream]
@@ -45,20 +53,10 @@ impl<'a> StreamWriter<'a> {
     pub fn new(writer: &'a mut dyn Write) -> StreamWriter<'a> {
         Self { output_stream: CodedOutputStream::new(writer) }
     }
-
-    /// Flushes the CodedOutputStream buffer to output
-    ///
-    /// # Errors
-    ///
-    /// If the CodedOutputStream fails flush its buffer, a
-    /// [KytheError::WriterError] will be returned.
-    pub fn flush(&mut self) -> Result<(), KytheError> {
-        self.output_stream.flush().map_err(KytheError::WriterError)
-    }
 }
 
 impl<'a> KytheWriter for StreamWriter<'a> {
-    /// Given an [Entry], writes the entry using a CodedOutputStream.
+    /// Given an [Entry], writes the entry using a [CodedOutputStream].
     /// First writes a varint32 of the size of the entry, then writes the actual
     /// entry.
     ///
@@ -71,47 +69,15 @@ impl<'a> KytheWriter for StreamWriter<'a> {
         self.output_stream.write_raw_varint32(entry_size).map_err(KytheError::WriterError)?;
         entry.write_to_with_cached_sizes(&mut self.output_stream).map_err(KytheError::WriterError)
     }
-}
 
-/// A [KytheWriter] that writes entries to a Vec.
-#[derive(Default)]
-pub struct ArrayWriter {
-    entries: Vec<Entry>,
-}
-
-impl ArrayWriter {
-    /// Returns a new ArrayWriter
-    pub fn new() -> Self {
-        Self { entries: Vec::new() }
-    }
-    /// Returns a clone of the stored vector of entries.
-    pub fn get_entries(&self) -> Vec<Entry> {
-        self.entries.clone()
-    }
-}
-
-impl KytheWriter for ArrayWriter {
-    /// Given an [Entry], push it onto the vector. Never returns an error.
-    fn write_entry(&mut self, entry: Entry) -> Result<(), KytheError> {
-        self.entries.push(entry);
-        Ok(())
+    fn flush(&mut self) -> Result<(), KytheError> {
+        self.output_stream.flush().map_err(KytheError::WriterError)
     }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    #[test]
-    fn array_writer_test() {
-        let entry = Entry::new();
-        let mut test_vec = Vec::new();
-        test_vec.push(entry.clone());
-
-        let mut writer = ArrayWriter::new();
-        assert!(writer.write_entry(entry).is_ok());
-        assert_eq!(writer.get_entries(), test_vec);
-    }
 
     #[test]
     fn stream_writer_test() {
@@ -123,8 +89,6 @@ mod tests {
         let mut bytes: Vec<u8> = Vec::new();
         let mut writer = StreamWriter::new(&mut bytes);
         assert!(writer.write_entry(entry.clone()).is_ok());
-
-        // We must flush to make sure that the vec gets written to
         assert!(writer.flush().is_ok());
         assert_eq!(bytes.len(), 10);
 
