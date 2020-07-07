@@ -20,10 +20,6 @@ http_archive(
     ],
 )
 
-local_repository(
-    name = "io_bazel_rules_rust",
-    path = "/usr/local/google/home/wcalandro/Documents/GitHub/rules_rust"
-)
 load("//:setup.bzl", "kythe_rule_repositories", "maybe")
 
 kythe_rule_repositories()
