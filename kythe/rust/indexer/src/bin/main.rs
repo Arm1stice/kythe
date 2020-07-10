@@ -62,7 +62,7 @@ fn main() -> Result<()> {
         util::extract_from_kzip(&unit, &temp_path, &mut kzip_provider)?;
 
         // Index the CompilationUnit
-        indexer.index_cu(&unit, &temp_path);
+        indexer.index_cu(&unit, &temp_path)?;
     }
     Ok(())
 }

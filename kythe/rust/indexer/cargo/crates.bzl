@@ -161,6 +161,15 @@ def raze_fetch_remote_crates():
     )
 
     _new_http_archive(
+        name = "raze__lazy_static__1_4_0",
+        url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/lazy_static/lazy_static-1.4.0.crate",
+        type = "tar.gz",
+        sha256 = "e2abad23fbc42b3700f2f279844dc832adb2b2eb069b2df918f455c4e18cc646",
+        strip_prefix = "lazy_static-1.4.0",
+        build_file = Label("//kythe/rust/indexer/cargo/remote:lazy_static-1.4.0.BUILD"),
+    )
+
+    _new_http_archive(
         name = "raze__libc__0_2_71",
         url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/libc/libc-0.2.71.crate",
         type = "tar.gz",

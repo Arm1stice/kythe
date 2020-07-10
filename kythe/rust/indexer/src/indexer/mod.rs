@@ -13,12 +13,14 @@
 // limitations under the License.
 
 use crate::error::KytheError;
-use crate::writer::{KytheWriter, StreamWriter};
-pub mod analysis;
-pub mod util;
+use crate::writer::KytheWriter;
+pub mod analyzers;
+pub mod entries;
+pub mod save_analysis;
 
 use analysis_rust_proto::*;
 use std::path::PathBuf;
+use analyzers::UnitAnalyzer;
 
 pub struct KytheIndexer<'a> {
     writer: &'a mut dyn KytheWriter,
@@ -34,20 +36,24 @@ impl<'a> KytheIndexer<'a> {
         unit: &CompilationUnit,
         root_dir: &PathBuf,
     ) -> Result<(), KytheError> {
+        // TODO: Add information to the design doc about using UnitAnalyzer and other
+        // classes to build internal state
+        let mut generator = UnitAnalyzer::new(unit, self.writer, root_dir);
+
         // First, create file nodes for all of the source files in the CompilationUnit
-        util::generate_file_nodes(unit, self.writer, root_dir)?;
-        self.writer.flush();
-        // Analysis files are extracted to the analysis folder inside of the root
-        // directory
-        // let analysis = analysis::generate_analysis(&root_dir.join("analysis"));
-        // let c = analysis.get(0).unwrap();
-        // println!("{}", c.id.name);
-        // let crate_analysis = &c.analysis;
-        // let defs = &crate_analysis.defs;
-        // println!("==Definitions==");
-        // for def in defs {
-        //     println!("{}", def.name);
-        // }
+        generator.generate_file_nodes()?;
+
+        // Then, import the analysis
+        let analyzed_crates = save_analysis::load_analysis(&root_dir.join("analysis"));
+
+        // Loop through all of the crates that we loaded
+        for krate in analyzed_crates {
+            let crate_info = krate.id;
+            let crate_analysis = krate.analysis;
+        }
+
+        // We must flush the writer each time to ensure that all entries get written
+        self.writer.flush()?;
         Ok(())
     }
 }

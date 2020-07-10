@@ -50,8 +50,9 @@ impl AnalysisLoader for Loader {
     }
 }
 
-/// Takes a PathBuf, loads the save_analysis files from the path, and returns a Vec<Crates>
-pub fn generate_analysis(root_dir: &PathBuf) -> Vec<Crate> {
+/// Takes a PathBuf, loads the save_analysis files from the path, and returns a
+/// Vec<Crate>
+pub fn load_analysis(root_dir: &PathBuf) -> Vec<Crate> {
     let path = (*root_dir).clone();
     let loader = Loader::new(path);
     rls_analysis::read_analysis_from_files(&loader, Default::default(), &[] as &[&str])

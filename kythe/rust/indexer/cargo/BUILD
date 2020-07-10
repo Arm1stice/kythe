@@ -13,6 +13,10 @@ alias(
     actual = "@raze__anyhow__1_0_31//:anyhow",
 )
 alias(
+    name = "lazy_static",
+    actual = "@raze__lazy_static__1_4_0//:lazy_static",
+)
+alias(
     name = "protobuf",
     actual = "@raze__protobuf__2_8_2//:protobuf",
 )
