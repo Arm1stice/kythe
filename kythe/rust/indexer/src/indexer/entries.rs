@@ -23,7 +23,7 @@ pub struct EntryEmitter<'a> {
 
 impl<'a> EntryEmitter<'a> {
     pub fn new(writer: &'a mut dyn KytheWriter) -> Self {
-        Self{writer}
+        Self { writer }
     }
 
     /// Takes a file name, fact name, and fact value. Creates a node with the
@@ -32,7 +32,7 @@ impl<'a> EntryEmitter<'a> {
     /// # Errors
     /// If an error occurs while writing the entry, a [KytheError::WriterError]
     /// is returned.
-    pub fn generate_node(
+    pub fn emit_node(
         &mut self,
         vname: VName,
         fact_name: String,
@@ -45,5 +45,13 @@ impl<'a> EntryEmitter<'a> {
         entry.set_fact_value(fact_value);
 
         self.writer.write_entry(entry)
+    }
+
+    // Given a signature, returns a VName
+    // TODO: Figure out how to fill out the other fields
+    pub fn vname_from_signature(signature: &str) -> VName {
+        let mut vname = VName::new();
+        vname.set_signature(signature.into());
+        vname
     }
 }

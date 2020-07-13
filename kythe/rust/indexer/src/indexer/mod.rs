@@ -19,8 +19,8 @@ pub mod entries;
 pub mod save_analysis;
 
 use analysis_rust_proto::*;
-use std::path::PathBuf;
 use analyzers::UnitAnalyzer;
+use std::path::PathBuf;
 
 pub struct KytheIndexer<'a> {
     writer: &'a mut dyn KytheWriter,
@@ -41,15 +41,14 @@ impl<'a> KytheIndexer<'a> {
         let mut generator = UnitAnalyzer::new(unit, self.writer, root_dir);
 
         // First, create file nodes for all of the source files in the CompilationUnit
-        generator.generate_file_nodes()?;
+        generator.emit_file_nodes()?;
 
         // Then, import the analysis
         let analyzed_crates = save_analysis::load_analysis(&root_dir.join("analysis"));
 
         // Loop through all of the crates that we loaded
         for krate in analyzed_crates {
-            let crate_info = krate.id;
-            let crate_analysis = krate.analysis;
+            generator.index_crate(krate)?;
         }
 
         // We must flush the writer each time to ensure that all entries get written

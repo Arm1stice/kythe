@@ -19,6 +19,7 @@ use super::entries::EntryEmitter;
 
 use analysis_rust_proto::CompilationUnit;
 use rls_analysis::Crate;
+use rls_data::{Def, DefKind};
 use std::collections::HashMap;
 use std::fs::File;
 use std::io::Read;
@@ -38,7 +39,7 @@ pub struct UnitAnalyzer<'a> {
 }
 
 pub struct CrateAnalyzer<'a, 'b> {
-    emitter: &'b EntryEmitter<'a>,
+    emitter: &'b mut EntryEmitter<'a>,
     file_vnames: &'b HashMap<String, VName>,
     krate: Crate,
     krate_ids: HashMap<u32, String>,
@@ -63,24 +64,27 @@ impl<'a> UnitAnalyzer<'a> {
             file_vnames.insert(path, storage_vname);
         }
 
-        Self {
-            unit,
-            emitter: EntryEmitter::new(writer),
-            root_dir,
-            file_vnames
-        }
+        Self { unit, emitter: EntryEmitter::new(writer), root_dir, file_vnames }
     }
 
-    pub fn generate_file_nodes(&mut self) -> Result<(), KytheError> {
+    pub fn emit_file_nodes(&mut self) -> Result<(), KytheError> {
         // https://kythe.io/docs/schema/#file
         for source_file in self.unit.get_source_file() {
             let vname = self.get_vname(source_file)?;
 
             // Create the file node fact
-            self.emitter.generate_node(vname.clone(), "/kythe/node/kind".into(), FILE_FACT.clone())?;
+            self.emitter.emit_node(
+                vname.clone(),
+                "/kythe/node/kind".into(),
+                FILE_FACT.clone(),
+            )?;
 
             // Create language fact
-            self.emitter.generate_node(vname.clone(), "/kythe/language".into(), LANGUAGE_FACT.clone())?;
+            self.emitter.emit_node(
+                vname.clone(),
+                "/kythe/language".into(),
+                LANGUAGE_FACT.clone(),
+            )?;
 
             // Read the file contents and set it on the fact
             // Returns a FileReadError if we can't read the file
@@ -89,13 +93,14 @@ impl<'a> UnitAnalyzer<'a> {
             file.read_to_end(&mut file_contents)?;
 
             // Create text fact
-            self.emitter.generate_node(vname.clone(), "/kythe/text".into(), file_contents)?;
+            self.emitter.emit_node(vname.clone(), "/kythe/text".into(), file_contents)?;
         }
         Ok(())
     }
 
     pub fn index_crate(&mut self, krate: Crate) -> Result<(), KytheError> {
-        let _crate_analyzer = CrateAnalyzer::new(&self.emitter, &self.file_vnames, krate);
+        let mut crate_analyzer = CrateAnalyzer::new(&mut self.emitter, &self.file_vnames, krate);
+        crate_analyzer.emit_crate_nodes()?;
         Ok(())
     }
 
@@ -112,16 +117,91 @@ impl<'a> UnitAnalyzer<'a> {
         let vname = self.file_vnames.get(file_name).ok_or(KytheError::IndexerError(err_msg))?;
         Ok(vname.clone())
     }
+
     // TODO: helper function to generate a vname with unique signature given a file
     // name and add'l info
 }
 
 impl<'a, 'b> CrateAnalyzer<'a, 'b> {
     pub fn new(
-        emitter: &'b EntryEmitter<'a>,
+        emitter: &'b mut EntryEmitter<'a>,
         file_vnames: &'b HashMap<String, VName>,
         krate: Crate,
     ) -> Self {
         Self { emitter, file_vnames, krate, krate_ids: HashMap::new() }
+    }
+
+    /// Generates and emits package nodes for the main crate and external crates
+    /// NOTE: Must be called first to populate the self.krate_ids HashMap
+    pub fn emit_crate_nodes(&mut self) -> Result<(), KytheError> {
+        let krate_analysis = &self.krate.analysis;
+        let krate_prelude =
+            &krate_analysis.prelude.as_ref().unwrap_or(KytheError::IndexerError(format!(
+                "Crate \"{}\" did not have prelude data",
+                &self.krate.id.name
+            )))?;
+
+        // First emit the node for our own crate and add it to the hashmap
+        // TODO: Make this a better error
+        let krate_id = &krate_prelude.crate_id;
+        let krate_signature =
+            format!("{}_{}_{}", krate_id.name, krate_id.disambiguator.0, krate_id.disambiguator.1);
+        let krate_vname = EntryEmitter::vname_from_signature(&krate_signature);
+        self.emitter.emit_node(krate_vname, "/kythe/node/kind".into(), b"package".to_vec())?;
+        self.krate_ids.insert(0u32, krate_signature);
+
+        // Then, do the same for all of the external crates
+        for external_krate in &krate_prelude.external_crates {
+            let krate_id = &external_krate.id;
+            let krate_signature = format!(
+                "{}_{}_{}",
+                krate_id.name, krate_id.disambiguator.0, krate_id.disambiguator.1
+            );
+            let krate_vname = EntryEmitter::vname_from_signature(&krate_signature);
+            self.emitter.emit_node(
+                krate_vname,
+                "/kythe/node/kind".into(),
+                b"package".to_vec(),
+            )?;
+            self.krate_ids.insert(0u32, krate_signature);
+        }
+
+        Ok(())
+    }
+
+    pub fn emit_definitions(&mut self) -> Result<(), KytheError> {
+        let analysis = &self.krate.analysis;
+        for def in &analysis.defs {
+            let krate_signature = self.krate_ids.get(def.id.krate).unwrap_or(
+                KytheError::IndexerError(
+                    format!("Definition \"{}\" referenced crate \"{}\" which was not found in the krate_ids HashMap")
+                ))?;
+            let def_signature = format!("{}_{}", krate_signature, def.id.index);
+            
+            // Generate node based on definition type
+
+            // Generate anchor based on span
+            // - Emit anchor node
+            // - Emit defines/binding edge from anchor to def
+
+            // If documentation isn't "" also generate a documents node
+            // - Emit documentation type node
+            // - Emit documents edge from node to def
+        }
+    }
+
+    fn emit_definition_node(&mut self, signature: &str, def: &Def) -> Result<(), KytheError> {
+        let node_vname = EntryEmitter::vname_from_signature(signature);
+        let def_type: String;
+        let fact_value: HashMap<String, Vec<u8>> = HashMap::new();
+        match def.kind {
+            DefKind::Function => {
+                // TODO: Populate def_type
+                // TODO: Insert fact/value pairs into hashmap
+            }
+        }
+        // Emit nodes for all fact/value pairs
+        Ok(())
+        // TODO: Huge match statement based on DefKind
     }
 }
