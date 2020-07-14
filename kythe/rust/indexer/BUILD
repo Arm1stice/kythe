@@ -52,6 +52,8 @@ rust_test(
   name = "integration_tests",
   srcs = glob(["tests/*.rs"]),
   deps = [
+    "//kythe/proto:analysis_rust_proto",
+    "//kythe/proto:storage_rust_proto",
     ":kythe_rust_indexer",
     ":library_inline_tests",
     ":indexer",

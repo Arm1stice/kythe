@@ -34,21 +34,52 @@ impl<'a> EntryEmitter<'a> {
     /// is returned.
     pub fn emit_node(
         &mut self,
-        vname: VName,
-        fact_name: String,
+        vname: &VName,
+        fact_name: &str,
         fact_value: Vec<u8>,
     ) -> Result<(), KytheError> {
-        // let vname = self.get_vname(&file_name)?;
         let mut entry = Entry::new();
-        entry.set_source(vname);
-        entry.set_fact_name(fact_name);
+        entry.set_source(vname.clone());
+        entry.set_fact_name(fact_name.into());
         entry.set_fact_value(fact_value);
 
         self.writer.write_entry(entry)
     }
 
+    pub fn emit_edge(
+        &mut self,
+        source: &VName,
+        target: &VName,
+        edge_kind: &str,
+    ) -> Result<(), KytheError> {
+        let mut entry = Entry::new();
+        entry.set_source(source.clone());
+        entry.set_target(target.clone());
+        entry.set_edge_kind(edge_kind.into());
+
+        self.writer.write_entry(entry)
+    }
+
+    pub fn emit_anchor(
+        &mut self,
+        anchor_vname: &VName,
+        target_vname: &VName,
+        byte_start: u32,
+        byte_end: u32,
+    ) -> Result<(), KytheError> {
+        self.emit_node(anchor_vname, "/kythe/node/kind", b"anchor".to_vec())?;
+        self.emit_node(
+            anchor_vname,
+            "/kythe/loc/start",
+            byte_start.to_be_bytes().to_vec(),
+        )?;
+        self.emit_node(anchor_vname, "/kythe/loc/end", byte_end.to_be_bytes().to_vec())?;
+        self.emit_edge(anchor_vname, target_vname, "/kythe/edge/defines/binding")
+    }
+
     // Given a signature, returns a VName
     // TODO: Figure out how to fill out the other fields
+    // Should it be based on the path of the main file?
     pub fn vname_from_signature(signature: &str) -> VName {
         let mut vname = VName::new();
         vname.set_signature(signature.into());
