@@ -65,7 +65,7 @@ impl KzipFileProvider {
         let mut zip_archive = ZipArchive::new(reader)?;
 
         // Get the name of the root folder of the kzip. This should be almost always be
-        // "root" by the kzip spec doesn't guarantee it.
+        // "root" but the kzip spec doesn't guarantee it.
         let root_name = {
             let file = zip_archive.by_index(0)?;
             let mut path = Path::new(file.name());
