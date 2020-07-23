@@ -23,10 +23,10 @@ load(
 )
 
 
-# Unsupported target "context" with type "example" omitted
+# Unsupported target "build-script-build" with type "custom-build" omitted
 
 rust_library(
-    name = "quick_error",
+    name = "winapi",
     crate_type = "lib",
     deps = [
     ],
@@ -36,9 +36,21 @@ rust_library(
     rustc_flags = [
         "--cap-lints=allow",
     ],
-    version = "1.2.3",
+    version = "0.3.9",
     tags = ["cargo-raze"],
     crate_features = [
+        "errhandlingapi",
+        "fileapi",
+        "handleapi",
+        "minwinbase",
+        "minwindef",
+        "ntdef",
+        "profileapi",
+        "std",
+        "sysinfoapi",
+        "timezoneapi",
+        "winbase",
+        "winerror",
     ],
 )
 

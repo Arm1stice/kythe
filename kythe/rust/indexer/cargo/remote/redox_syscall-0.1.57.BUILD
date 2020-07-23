@@ -12,7 +12,7 @@ package(default_visibility = [
 ])
 
 licenses([
-  "notice", # MIT from expression "MIT OR Apache-2.0"
+  "notice", # MIT from expression "MIT"
 ])
 
 load(
@@ -23,10 +23,14 @@ load(
 )
 
 
-# Unsupported target "context" with type "example" omitted
+alias(
+  name = "redox_syscall",
+  actual = ":syscall",
+  tags = ["cargo-raze"],
+)
 
 rust_library(
-    name = "quick_error",
+    name = "syscall",
     crate_type = "lib",
     deps = [
     ],
@@ -36,7 +40,7 @@ rust_library(
     rustc_flags = [
         "--cap-lints=allow",
     ],
-    version = "1.2.3",
+    version = "0.1.57",
     tags = ["cargo-raze"],
     crate_features = [
     ],

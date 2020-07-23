@@ -12,7 +12,7 @@ package(default_visibility = [
 ])
 
 licenses([
-  "notice", # MIT from expression "MIT OR Apache-2.0"
+  "notice", # MIT from expression "MIT"
 ])
 
 load(
@@ -23,12 +23,14 @@ load(
 )
 
 
-# Unsupported target "context" with type "example" omitted
 
 rust_library(
-    name = "quick_error",
-    crate_type = "lib",
+    name = "derive_new",
+    crate_type = "proc-macro",
     deps = [
+        "@raze__proc_macro2__1_0_19//:proc_macro2",
+        "@raze__quote__1_0_7//:quote",
+        "@raze__syn__1_0_35//:syn",
     ],
     srcs = glob(["**/*.rs"]),
     crate_root = "src/lib.rs",
@@ -36,9 +38,12 @@ rust_library(
     rustc_flags = [
         "--cap-lints=allow",
     ],
-    version = "1.2.3",
+    version = "0.5.8",
     tags = ["cargo-raze"],
     crate_features = [
+        "default",
+        "std",
     ],
 )
 
+# Unsupported target "test" with type "test" omitted

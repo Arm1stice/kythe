@@ -12,7 +12,7 @@ package(default_visibility = [
 ])
 
 licenses([
-  "notice", # MIT from expression "MIT OR Apache-2.0"
+  "unencumbered", # Unlicense from expression "Unlicense OR MIT"
 ])
 
 load(
@@ -23,12 +23,13 @@ load(
 )
 
 
-# Unsupported target "context" with type "example" omitted
+# Unsupported target "build" with type "bench" omitted
 
 rust_library(
-    name = "quick_error",
+    name = "fst",
     crate_type = "lib",
     deps = [
+        "@raze__byteorder__1_3_4//:byteorder",
     ],
     srcs = glob(["**/*.rs"]),
     crate_root = "src/lib.rs",
@@ -36,9 +37,11 @@ rust_library(
     rustc_flags = [
         "--cap-lints=allow",
     ],
-    version = "1.2.3",
+    version = "0.3.5",
     tags = ["cargo-raze"],
     crate_features = [
     ],
 )
 
+# Unsupported target "search" with type "bench" omitted
+# Unsupported target "test" with type "test" omitted

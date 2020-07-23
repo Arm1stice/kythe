@@ -23,12 +23,14 @@ load(
 )
 
 
-# Unsupported target "context" with type "example" omitted
+# Unsupported target "build-script-build" with type "custom-build" omitted
+# Unsupported target "filters" with type "test" omitted
 
 rust_library(
-    name = "quick_error",
+    name = "log",
     crate_type = "lib",
     deps = [
+        "@raze__cfg_if__0_1_10//:cfg_if",
     ],
     srcs = glob(["**/*.rs"]),
     crate_root = "src/lib.rs",
@@ -36,9 +38,10 @@ rust_library(
     rustc_flags = [
         "--cap-lints=allow",
     ],
-    version = "1.2.3",
+    version = "0.4.11",
     tags = ["cargo-raze"],
     crate_features = [
     ],
 )
 
+# Unsupported target "macros" with type "test" omitted

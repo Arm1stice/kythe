@@ -66,7 +66,7 @@ impl KzipFileProvider {
         let mut zip_archive = ZipArchive::new(reader)?;
 
         // Get the name of the root folder of the kzip. This should be almost always be
-        // "root" by the kzip spec doesn't guarantee it.
+        // "root" but the kzip spec doesn't guarantee it.
         let root_name = {
             let file = zip_archive.by_index(0)?;
             let mut path = Path::new(file.name());
@@ -102,7 +102,7 @@ impl KzipFileProvider {
             let file = self.zip_archive.by_index(i)?;
             if file.is_file() && file.name().contains("/pbunits/") {
                 let mut reader = BufReader::new(file);
-                let bundle = protobuf::parse_from_reader::<CompilationBundle>(&mut reader)?;
+                let bundle = protobuf::parse_from_reader::<IndexedCompilation>(&mut reader)?;
                 compilation_units.push(bundle.get_unit().clone());
             }
         }

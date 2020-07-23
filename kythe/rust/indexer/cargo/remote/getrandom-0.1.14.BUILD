@@ -23,22 +23,27 @@ load(
 )
 
 
-# Unsupported target "context" with type "example" omitted
+# Unsupported target "build-script-build" with type "custom-build" omitted
+# Unsupported target "common" with type "test" omitted
 
 rust_library(
-    name = "quick_error",
+    name = "getrandom",
     crate_type = "lib",
     deps = [
+        "@raze__cfg_if__0_1_10//:cfg_if",
+        "@raze__libc__0_2_73//:libc",
     ],
     srcs = glob(["**/*.rs"]),
     crate_root = "src/lib.rs",
-    edition = "2015",
+    edition = "2018",
     rustc_flags = [
         "--cap-lints=allow",
     ],
-    version = "1.2.3",
+    version = "0.1.14",
     tags = ["cargo-raze"],
     crate_features = [
+        "std",
     ],
 )
 
+# Unsupported target "mod" with type "bench" omitted

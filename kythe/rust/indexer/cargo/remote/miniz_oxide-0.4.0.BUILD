@@ -12,7 +12,7 @@ package(default_visibility = [
 ])
 
 licenses([
-  "notice", # MIT from expression "MIT OR Apache-2.0"
+  "notice", # MIT from expression "MIT"
 ])
 
 load(
@@ -23,20 +23,20 @@ load(
 )
 
 
-# Unsupported target "context" with type "example" omitted
 
 rust_library(
-    name = "quick_error",
+    name = "miniz_oxide",
     crate_type = "lib",
     deps = [
+        "@raze__adler__0_2_3//:adler",
     ],
     srcs = glob(["**/*.rs"]),
     crate_root = "src/lib.rs",
-    edition = "2015",
+    edition = "2018",
     rustc_flags = [
         "--cap-lints=allow",
     ],
-    version = "1.2.3",
+    version = "0.4.0",
     tags = ["cargo-raze"],
     crate_features = [
     ],

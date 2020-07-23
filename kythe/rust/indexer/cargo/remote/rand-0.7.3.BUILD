@@ -23,24 +23,40 @@ load(
 )
 
 
+# Unsupported target "generators" with type "bench" omitted
+# Unsupported target "misc" with type "bench" omitted
+# Unsupported target "monte-carlo" with type "example" omitted
+# Unsupported target "monty-hall" with type "example" omitted
 
 rust_library(
-    name = "bzip2",
+    name = "rand",
     crate_type = "lib",
     deps = [
-        "@raze__bzip2_sys__0_1_9_1_0_8//:bzip2_sys",
+        "@raze__getrandom__0_1_14//:getrandom",
         "@raze__libc__0_2_73//:libc",
+        "@raze__rand_chacha__0_2_2//:rand_chacha",
+        "@raze__rand_core__0_5_1//:rand_core",
     ],
     srcs = glob(["**/*.rs"]),
     crate_root = "src/lib.rs",
-    edition = "2015",
+    edition = "2018",
     rustc_flags = [
         "--cap-lints=allow",
     ],
-    version = "0.3.3",
+    version = "0.7.3",
     tags = ["cargo-raze"],
     crate_features = [
+        "alloc",
+        "default",
+        "getrandom",
+        "getrandom_package",
+        "libc",
+        "std",
     ],
+    aliases = {
+        "@raze__getrandom__0_1_14//:getrandom": "getrandom_package",
+    },
 )
 
-# Unsupported target "tokio" with type "test" omitted
+# Unsupported target "seq" with type "bench" omitted
+# Unsupported target "weighted" with type "bench" omitted

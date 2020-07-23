@@ -28,7 +28,7 @@ rust_library(
     name = "time",
     crate_type = "lib",
     deps = [
-        "@raze__libc__0_2_71//:libc",
+        "@raze__libc__0_2_73//:libc",
     ],
     srcs = glob(["**/*.rs"]),
     crate_root = "src/lib.rs",
@@ -37,6 +37,7 @@ rust_library(
         "--cap-lints=allow",
     ],
     version = "0.1.43",
+    tags = ["cargo-raze"],
     crate_features = [
     ],
 )

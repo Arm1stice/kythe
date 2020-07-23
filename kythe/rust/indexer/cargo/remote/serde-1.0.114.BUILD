@@ -23,10 +23,10 @@ load(
 )
 
 
-# Unsupported target "context" with type "example" omitted
+# Unsupported target "build-script-build" with type "custom-build" omitted
 
 rust_library(
-    name = "quick_error",
+    name = "serde",
     crate_type = "lib",
     deps = [
     ],
@@ -36,9 +36,11 @@ rust_library(
     rustc_flags = [
         "--cap-lints=allow",
     ],
-    version = "1.2.3",
+    version = "1.0.114",
     tags = ["cargo-raze"],
     crate_features = [
+        "default",
+        "std",
     ],
 )
 

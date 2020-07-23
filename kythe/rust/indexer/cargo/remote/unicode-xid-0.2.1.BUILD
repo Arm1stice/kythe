@@ -23,10 +23,10 @@ load(
 )
 
 
-# Unsupported target "context" with type "example" omitted
+# Unsupported target "exhaustive_tests" with type "test" omitted
 
 rust_library(
-    name = "quick_error",
+    name = "unicode_xid",
     crate_type = "lib",
     deps = [
     ],
@@ -36,9 +36,10 @@ rust_library(
     rustc_flags = [
         "--cap-lints=allow",
     ],
-    version = "1.2.3",
+    version = "0.2.1",
     tags = ["cargo-raze"],
     crate_features = [
+        "default",
     ],
 )
 

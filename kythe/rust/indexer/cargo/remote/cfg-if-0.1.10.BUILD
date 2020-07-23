@@ -23,22 +23,22 @@ load(
 )
 
 
-# Unsupported target "context" with type "example" omitted
 
 rust_library(
-    name = "quick_error",
+    name = "cfg_if",
     crate_type = "lib",
     deps = [
     ],
     srcs = glob(["**/*.rs"]),
     crate_root = "src/lib.rs",
-    edition = "2015",
+    edition = "2018",
     rustc_flags = [
         "--cap-lints=allow",
     ],
-    version = "1.2.3",
+    version = "0.1.10",
     tags = ["cargo-raze"],
     crate_features = [
     ],
 )
 
+# Unsupported target "xcrate" with type "test" omitted

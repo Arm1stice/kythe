@@ -39,7 +39,7 @@ rust_library(
     deps = [
         "@raze__bzip2__0_3_3//:bzip2",
         "@raze__crc32fast__1_2_0//:crc32fast",
-        "@raze__flate2__1_0_14//:flate2",
+        "@raze__flate2__1_0_16//:flate2",
         "@raze__podio__0_1_7//:podio",
         "@raze__time__0_1_43//:time",
     ],
@@ -50,6 +50,7 @@ rust_library(
         "--cap-lints=allow",
     ],
     version = "0.5.6",
+    tags = ["cargo-raze"],
     crate_features = [
         "bzip2",
         "default",

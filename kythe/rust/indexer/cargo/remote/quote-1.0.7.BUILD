@@ -23,22 +23,26 @@ load(
 )
 
 
-# Unsupported target "context" with type "example" omitted
+# Unsupported target "compiletest" with type "test" omitted
 
 rust_library(
-    name = "quick_error",
+    name = "quote",
     crate_type = "lib",
     deps = [
+        "@raze__proc_macro2__1_0_19//:proc_macro2",
     ],
     srcs = glob(["**/*.rs"]),
     crate_root = "src/lib.rs",
-    edition = "2015",
+    edition = "2018",
     rustc_flags = [
         "--cap-lints=allow",
     ],
-    version = "1.2.3",
+    version = "1.0.7",
     tags = ["cargo-raze"],
     crate_features = [
+        "default",
+        "proc-macro",
     ],
 )
 
+# Unsupported target "test" with type "test" omitted

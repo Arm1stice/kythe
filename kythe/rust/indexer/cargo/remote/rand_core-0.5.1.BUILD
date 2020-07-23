@@ -23,22 +23,25 @@ load(
 )
 
 
-# Unsupported target "context" with type "example" omitted
 
 rust_library(
-    name = "quick_error",
+    name = "rand_core",
     crate_type = "lib",
     deps = [
+        "@raze__getrandom__0_1_14//:getrandom",
     ],
     srcs = glob(["**/*.rs"]),
     crate_root = "src/lib.rs",
-    edition = "2015",
+    edition = "2018",
     rustc_flags = [
         "--cap-lints=allow",
     ],
-    version = "1.2.3",
+    version = "0.5.1",
     tags = ["cargo-raze"],
     crate_features = [
+        "alloc",
+        "getrandom",
+        "std",
     ],
 )
 

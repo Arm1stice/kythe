@@ -23,10 +23,9 @@ load(
 )
 
 
-# Unsupported target "context" with type "example" omitted
 
 rust_library(
-    name = "quick_error",
+    name = "either",
     crate_type = "lib",
     deps = [
     ],
@@ -36,7 +35,7 @@ rust_library(
     rustc_flags = [
         "--cap-lints=allow",
     ],
-    version = "1.2.3",
+    version = "1.5.3",
     tags = ["cargo-raze"],
     crate_features = [
     ],
