@@ -40,8 +40,8 @@ rust_library(
     deps = [
         "@raze__cfg_if__0_1_10//:cfg_if",
         "@raze__crc32fast__1_2_0//:crc32fast",
-        "@raze__libc__0_2_71//:libc",
-        "@raze__miniz_oxide__0_3_7//:miniz_oxide",
+        "@raze__libc__0_2_73//:libc",
+        "@raze__miniz_oxide__0_4_0//:miniz_oxide",
     ],
     srcs = glob(["**/*.rs"]),
     crate_root = "src/lib.rs",
@@ -49,7 +49,8 @@ rust_library(
     rustc_flags = [
         "--cap-lints=allow",
     ],
-    version = "1.0.14",
+    version = "1.0.16",
+    tags = ["cargo-raze"],
     crate_features = [
         "miniz_oxide",
         "rust_backend",

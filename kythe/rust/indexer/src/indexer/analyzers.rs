@@ -26,11 +26,6 @@ use std::io::Read;
 use std::path::{Path, PathBuf};
 use storage_rust_proto::*;
 
-lazy_static! {
-    static ref FILE_FACT: Vec<u8> = b"file".to_vec();
-    static ref LANGUAGE_FACT: Vec<u8> = b"rust".to_vec();
-}
-
 pub struct UnitAnalyzer<'a> {
     unit: &'a CompilationUnit,
     emitter: EntryEmitter<'a>,
@@ -73,10 +68,10 @@ impl<'a> UnitAnalyzer<'a> {
             let vname = self.get_vname(source_file)?;
 
             // Create the file node fact
-            self.emitter.emit_node(&vname, "/kythe/node/kind", FILE_FACT.clone())?;
+            self.emitter.emit_node(&vname, "/kythe/node/kind", b"file".to_vec())?;
 
             // Create language fact
-            self.emitter.emit_node(&vname, "/kythe/language", LANGUAGE_FACT.clone())?;
+            self.emitter.emit_node(&vname, "/kythe/language", b"rust".to_vec())?;
 
             // Read the file contents and set it on the fact
             // Returns a FileReadError if we can't read the file

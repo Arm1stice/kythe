@@ -16,7 +16,6 @@ rust_library(
     "//kythe/rust/indexer/cargo:zip",
     "//kythe/rust/indexer/cargo:rls_data",
     "//kythe/rust/indexer/cargo:rls_analysis",
-    "//kythe/rust/indexer/cargo:lazy_static",
   ] + PROTO_COMPILE_DEPS,
   edition = "2018",
 )

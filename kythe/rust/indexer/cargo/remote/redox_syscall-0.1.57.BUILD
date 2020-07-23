@@ -12,7 +12,7 @@ package(default_visibility = [
 ])
 
 licenses([
-  "notice", # MIT from expression "MIT OR Apache-2.0"
+  "notice", # MIT from expression "MIT"
 ])
 
 load(
@@ -23,9 +23,14 @@ load(
 )
 
 
+alias(
+  name = "redox_syscall",
+  actual = ":syscall",
+  tags = ["cargo-raze"],
+)
 
 rust_library(
-    name = "lazy_static",
+    name = "syscall",
     crate_type = "lib",
     deps = [
     ],
@@ -35,10 +40,9 @@ rust_library(
     rustc_flags = [
         "--cap-lints=allow",
     ],
-    version = "1.4.0",
+    version = "0.1.57",
+    tags = ["cargo-raze"],
     crate_features = [
     ],
 )
 
-# Unsupported target "no_std" with type "test" omitted
-# Unsupported target "test" with type "test" omitted

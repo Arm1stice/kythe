@@ -12,7 +12,7 @@ package(default_visibility = [
 ])
 
 licenses([
-  "notice", # MIT from expression "MIT OR Apache-2.0"
+  "notice", # MIT from expression "0BSD OR (MIT OR Apache-2.0)"
 ])
 
 load(
@@ -23,14 +23,11 @@ load(
 )
 
 
-# Unsupported target "build-script-build" with type "custom-build" omitted
-# Unsupported target "filters" with type "test" omitted
 
 rust_library(
-    name = "log",
+    name = "adler",
     crate_type = "lib",
     deps = [
-        "@raze__cfg_if__0_1_10//:cfg_if",
     ],
     srcs = glob(["**/*.rs"]),
     crate_root = "src/lib.rs",
@@ -38,8 +35,10 @@ rust_library(
     rustc_flags = [
         "--cap-lints=allow",
     ],
-    version = "0.4.8",
+    version = "0.2.3",
+    tags = ["cargo-raze"],
     crate_features = [
     ],
 )
 
+# Unsupported target "bench" with type "bench" omitted

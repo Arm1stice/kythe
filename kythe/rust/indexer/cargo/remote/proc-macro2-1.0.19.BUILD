@@ -28,44 +28,50 @@ load(
 )
 
 cargo_build_script(
-    name = "bzip2_sys_build_script",
+    name = "proc_macro2_build_script",
     srcs = glob(["**/*.rs"]),
     crate_root = "build.rs",
-    edition = "2015",
+    edition = "2018",
     deps = [
-        "@raze__cc__1_0_58//:cc",
-        "@raze__pkg_config__0_3_18//:pkg_config",
     ],
     rustc_flags = [
         "--cap-lints=allow",
     ],
     crate_features = [
+      "default",
+      "proc-macro",
     ],
     build_script_env = {
     },
     data = glob(["**"]),
     tags = ["cargo-raze"],
-    version = "0.1.9+1.0.8",
+    version = "1.0.19",
     visibility = ["//visibility:private"],
 )
 
+# Unsupported target "comments" with type "test" omitted
+# Unsupported target "features" with type "test" omitted
+# Unsupported target "marker" with type "test" omitted
 
 rust_library(
-    name = "bzip2_sys",
+    name = "proc_macro2",
     crate_type = "lib",
     deps = [
-        ":bzip2_sys_build_script",
-        "@raze__libc__0_2_73//:libc",
+        ":proc_macro2_build_script",
+        "@raze__unicode_xid__0_2_1//:unicode_xid",
     ],
     srcs = glob(["**/*.rs"]),
-    crate_root = "lib.rs",
-    edition = "2015",
+    crate_root = "src/lib.rs",
+    edition = "2018",
     rustc_flags = [
         "--cap-lints=allow",
     ],
-    version = "0.1.9+1.0.8",
+    version = "1.0.19",
     tags = ["cargo-raze"],
     crate_features = [
+        "default",
+        "proc-macro",
     ],
 )
 
+# Unsupported target "test" with type "test" omitted

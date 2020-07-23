@@ -31,7 +31,7 @@ rust_library(
     name = "syn",
     crate_type = "lib",
     deps = [
-        "@raze__proc_macro2__1_0_18//:proc_macro2",
+        "@raze__proc_macro2__1_0_19//:proc_macro2",
         "@raze__quote__1_0_7//:quote",
         "@raze__unicode_xid__0_2_1//:unicode_xid",
     ],
@@ -41,7 +41,8 @@ rust_library(
     rustc_flags = [
         "--cap-lints=allow",
     ],
-    version = "1.0.33",
+    version = "1.0.35",
+    tags = ["cargo-raze"],
     crate_features = [
         "clone-impls",
         "default",

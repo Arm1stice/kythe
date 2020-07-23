@@ -31,7 +31,7 @@ rust_library(
     crate_type = "lib",
     deps = [
         "@raze__cfg_if__0_1_10//:cfg_if",
-        "@raze__libc__0_2_71//:libc",
+        "@raze__libc__0_2_73//:libc",
     ],
     srcs = glob(["**/*.rs"]),
     crate_root = "src/lib.rs",
@@ -40,6 +40,7 @@ rust_library(
         "--cap-lints=allow",
     ],
     version = "0.1.14",
+    tags = ["cargo-raze"],
     crate_features = [
         "std",
     ],

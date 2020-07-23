@@ -23,21 +23,27 @@ load(
 )
 
 
+# Unsupported target "build-script-build" with type "custom-build" omitted
 
 rust_library(
-    name = "pkg_config",
+    name = "serde_json",
     crate_type = "lib",
     deps = [
+        "@raze__itoa__0_4_6//:itoa",
+        "@raze__ryu__1_0_5//:ryu",
+        "@raze__serde__1_0_114//:serde",
     ],
     srcs = glob(["**/*.rs"]),
     crate_root = "src/lib.rs",
-    edition = "2015",
+    edition = "2018",
     rustc_flags = [
         "--cap-lints=allow",
     ],
-    version = "0.3.17",
+    version = "1.0.56",
+    tags = ["cargo-raze"],
     crate_features = [
+        "default",
+        "std",
     ],
 )
 
-# Unsupported target "test" with type "test" omitted

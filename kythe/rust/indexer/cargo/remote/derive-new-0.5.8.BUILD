@@ -28,9 +28,9 @@ rust_library(
     name = "derive_new",
     crate_type = "proc-macro",
     deps = [
-        "@raze__proc_macro2__1_0_18//:proc_macro2",
+        "@raze__proc_macro2__1_0_19//:proc_macro2",
         "@raze__quote__1_0_7//:quote",
-        "@raze__syn__1_0_33//:syn",
+        "@raze__syn__1_0_35//:syn",
     ],
     srcs = glob(["**/*.rs"]),
     crate_root = "src/lib.rs",
@@ -39,6 +39,7 @@ rust_library(
         "--cap-lints=allow",
     ],
     version = "0.5.8",
+    tags = ["cargo-raze"],
     crate_features = [
         "default",
         "std",

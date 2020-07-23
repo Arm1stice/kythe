@@ -25,39 +25,18 @@ load(
 
 
 rust_library(
-    name = "cc",
+    name = "pkg_config",
     crate_type = "lib",
     deps = [
     ],
     srcs = glob(["**/*.rs"]),
     crate_root = "src/lib.rs",
-    edition = "2018",
+    edition = "2015",
     rustc_flags = [
         "--cap-lints=allow",
     ],
-    version = "1.0.55",
-    crate_features = [
-    ],
-)
-
-# Unsupported target "cc_env" with type "test" omitted
-# Unsupported target "cflags" with type "test" omitted
-# Unsupported target "cxxflags" with type "test" omitted
-rust_binary(
-    # Prefix bin name to disambiguate from (probable) collision with lib name
-    # N.B.: The exact form of this is subject to change.
-    name = "cargo_bin_gcc_shim",
-    deps = [
-        # Binaries get an implicit dependency on their crate's lib
-        ":cc",
-    ],
-    srcs = glob(["**/*.rs"]),
-    crate_root = "src/bin/gcc-shim.rs",
-    edition = "2018",
-    rustc_flags = [
-        "--cap-lints=allow",
-    ],
-    version = "1.0.55",
+    version = "0.3.18",
+    tags = ["cargo-raze"],
     crate_features = [
     ],
 )

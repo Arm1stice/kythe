@@ -17,12 +17,12 @@ def _new_git_repository(name, **kwargs):
 def raze_fetch_remote_crates():
 
     _new_http_archive(
-        name = "raze__adler32__1_1_0",
-        url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/adler32/adler32-1.1.0.crate",
+        name = "raze__adler__0_2_3",
+        url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/adler/adler-0.2.3.crate",
         type = "tar.gz",
-        sha256 = "567b077b825e468cc974f0020d4082ee6e03132512f207ef1a02fd5d00d1f32d",
-        strip_prefix = "adler32-1.1.0",
-        build_file = Label("//kythe/rust/indexer/cargo/remote:adler32-1.1.0.BUILD"),
+        sha256 = "ee2a4ec343196209d6594e19543ae87a39f96d5534d7174822a3ad825dd6ed7e",
+        strip_prefix = "adler-0.2.3",
+        build_file = Label("//kythe/rust/indexer/cargo/remote:adler-0.2.3.BUILD"),
     )
 
     _new_http_archive(
@@ -62,12 +62,12 @@ def raze_fetch_remote_crates():
     )
 
     _new_http_archive(
-        name = "raze__cc__1_0_55",
-        url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/cc/cc-1.0.55.crate",
+        name = "raze__cc__1_0_58",
+        url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/cc/cc-1.0.58.crate",
         type = "tar.gz",
-        sha256 = "b1be3409f94d7bdceeb5f5fac551039d9b3f00e25da7a74fc4d33400a0d96368",
-        strip_prefix = "cc-1.0.55",
-        build_file = Label("//kythe/rust/indexer/cargo/remote:cc-1.0.55.BUILD"),
+        sha256 = "f9a06fb2e53271d7c279ec1efea6ab691c35a2ae67ec0d91d7acec0caf13b518",
+        strip_prefix = "cc-1.0.58",
+        build_file = Label("//kythe/rust/indexer/cargo/remote:cc-1.0.58.BUILD"),
     )
 
     _new_http_archive(
@@ -107,12 +107,12 @@ def raze_fetch_remote_crates():
     )
 
     _new_http_archive(
-        name = "raze__flate2__1_0_14",
-        url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/flate2/flate2-1.0.14.crate",
+        name = "raze__flate2__1_0_16",
+        url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/flate2/flate2-1.0.16.crate",
         type = "tar.gz",
-        sha256 = "2cfff41391129e0a856d6d822600b8d71179d46879e310417eb9c762eb178b42",
-        strip_prefix = "flate2-1.0.14",
-        build_file = Label("//kythe/rust/indexer/cargo/remote:flate2-1.0.14.BUILD"),
+        sha256 = "68c90b0fc46cf89d227cc78b40e494ff81287a92dd07631e5af0d06fe3cf885e",
+        strip_prefix = "flate2-1.0.16",
+        build_file = Label("//kythe/rust/indexer/cargo/remote:flate2-1.0.16.BUILD"),
     )
 
     _new_http_archive(
@@ -161,48 +161,39 @@ def raze_fetch_remote_crates():
     )
 
     _new_http_archive(
-        name = "raze__lazy_static__1_4_0",
-        url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/lazy_static/lazy_static-1.4.0.crate",
+        name = "raze__libc__0_2_73",
+        url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/libc/libc-0.2.73.crate",
         type = "tar.gz",
-        sha256 = "e2abad23fbc42b3700f2f279844dc832adb2b2eb069b2df918f455c4e18cc646",
-        strip_prefix = "lazy_static-1.4.0",
-        build_file = Label("//kythe/rust/indexer/cargo/remote:lazy_static-1.4.0.BUILD"),
+        sha256 = "bd7d4bd64732af4bf3a67f367c27df8520ad7e230c5817b8ff485864d80242b9",
+        strip_prefix = "libc-0.2.73",
+        build_file = Label("//kythe/rust/indexer/cargo/remote:libc-0.2.73.BUILD"),
     )
 
     _new_http_archive(
-        name = "raze__libc__0_2_71",
-        url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/libc/libc-0.2.71.crate",
+        name = "raze__log__0_4_11",
+        url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/log/log-0.4.11.crate",
         type = "tar.gz",
-        sha256 = "9457b06509d27052635f90d6466700c65095fdf75409b3fbdd903e988b886f49",
-        strip_prefix = "libc-0.2.71",
-        build_file = Label("//kythe/rust/indexer/cargo/remote:libc-0.2.71.BUILD"),
+        sha256 = "4fabed175da42fed1fa0746b0ea71f412aa9d35e76e95e59b192c64b9dc2bf8b",
+        strip_prefix = "log-0.4.11",
+        build_file = Label("//kythe/rust/indexer/cargo/remote:log-0.4.11.BUILD"),
     )
 
     _new_http_archive(
-        name = "raze__log__0_4_8",
-        url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/log/log-0.4.8.crate",
+        name = "raze__miniz_oxide__0_4_0",
+        url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/miniz_oxide/miniz_oxide-0.4.0.crate",
         type = "tar.gz",
-        sha256 = "14b6052be84e6b71ab17edffc2eeabf5c2c3ae1fdb464aae35ac50c67a44e1f7",
-        strip_prefix = "log-0.4.8",
-        build_file = Label("//kythe/rust/indexer/cargo/remote:log-0.4.8.BUILD"),
+        sha256 = "be0f75932c1f6cfae3c04000e40114adf955636e19040f9c0a2c380702aa1c7f",
+        strip_prefix = "miniz_oxide-0.4.0",
+        build_file = Label("//kythe/rust/indexer/cargo/remote:miniz_oxide-0.4.0.BUILD"),
     )
 
     _new_http_archive(
-        name = "raze__miniz_oxide__0_3_7",
-        url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/miniz_oxide/miniz_oxide-0.3.7.crate",
+        name = "raze__pkg_config__0_3_18",
+        url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/pkg-config/pkg-config-0.3.18.crate",
         type = "tar.gz",
-        sha256 = "791daaae1ed6889560f8c4359194f56648355540573244a5448a83ba1ecc7435",
-        strip_prefix = "miniz_oxide-0.3.7",
-        build_file = Label("//kythe/rust/indexer/cargo/remote:miniz_oxide-0.3.7.BUILD"),
-    )
-
-    _new_http_archive(
-        name = "raze__pkg_config__0_3_17",
-        url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/pkg-config/pkg-config-0.3.17.crate",
-        type = "tar.gz",
-        sha256 = "05da548ad6865900e60eaba7f589cc0783590a92e940c26953ff81ddbab2d677",
-        strip_prefix = "pkg-config-0.3.17",
-        build_file = Label("//kythe/rust/indexer/cargo/remote:pkg-config-0.3.17.BUILD"),
+        sha256 = "d36492546b6af1463394d46f0c834346f31548646f6ba10849802c9c9a27ac33",
+        strip_prefix = "pkg-config-0.3.18",
+        build_file = Label("//kythe/rust/indexer/cargo/remote:pkg-config-0.3.18.BUILD"),
     )
 
     _new_http_archive(
@@ -224,12 +215,12 @@ def raze_fetch_remote_crates():
     )
 
     _new_http_archive(
-        name = "raze__proc_macro2__1_0_18",
-        url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/proc-macro2/proc-macro2-1.0.18.crate",
+        name = "raze__proc_macro2__1_0_19",
+        url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/proc-macro2/proc-macro2-1.0.19.crate",
         type = "tar.gz",
-        sha256 = "beae6331a816b1f65d04c45b078fd8e6c93e8071771f41b8163255bbd8d7c8fa",
-        strip_prefix = "proc-macro2-1.0.18",
-        build_file = Label("//kythe/rust/indexer/cargo/remote:proc-macro2-1.0.18.BUILD"),
+        sha256 = "04f5f085b5d71e2188cb8271e5da0161ad52c3f227a661a3c135fdf28e258b12",
+        strip_prefix = "proc-macro2-1.0.19",
+        build_file = Label("//kythe/rust/indexer/cargo/remote:proc-macro2-1.0.19.BUILD"),
     )
 
     _new_http_archive(
@@ -302,12 +293,12 @@ def raze_fetch_remote_crates():
     )
 
     _new_http_archive(
-        name = "raze__redox_syscall__0_1_56",
-        url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/redox_syscall/redox_syscall-0.1.56.crate",
+        name = "raze__redox_syscall__0_1_57",
+        url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/redox_syscall/redox_syscall-0.1.57.crate",
         type = "tar.gz",
-        sha256 = "2439c63f3f6139d1b57529d16bc3b8bb855230c8efcc5d3a896c8bea7c3b1e84",
-        strip_prefix = "redox_syscall-0.1.56",
-        build_file = Label("//kythe/rust/indexer/cargo/remote:redox_syscall-0.1.56.BUILD"),
+        sha256 = "41cc0f7e4d5d4544e8861606a285bb08d3e70712ccc7d2b84d7c0ccfaf4b05ce",
+        strip_prefix = "redox_syscall-0.1.57",
+        build_file = Label("//kythe/rust/indexer/cargo/remote:redox_syscall-0.1.57.BUILD"),
     )
 
     _new_http_archive(
@@ -365,21 +356,21 @@ def raze_fetch_remote_crates():
     )
 
     _new_http_archive(
-        name = "raze__serde_json__1_0_55",
-        url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/serde_json/serde_json-1.0.55.crate",
+        name = "raze__serde_json__1_0_56",
+        url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/serde_json/serde_json-1.0.56.crate",
         type = "tar.gz",
-        sha256 = "ec2c5d7e739bc07a3e73381a39d61fdb5f671c60c1df26a130690665803d8226",
-        strip_prefix = "serde_json-1.0.55",
-        build_file = Label("//kythe/rust/indexer/cargo/remote:serde_json-1.0.55.BUILD"),
+        sha256 = "3433e879a558dde8b5e8feb2a04899cf34fdde1fafb894687e52105fc1162ac3",
+        strip_prefix = "serde_json-1.0.56",
+        build_file = Label("//kythe/rust/indexer/cargo/remote:serde_json-1.0.56.BUILD"),
     )
 
     _new_http_archive(
-        name = "raze__syn__1_0_33",
-        url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/syn/syn-1.0.33.crate",
+        name = "raze__syn__1_0_35",
+        url = "https://crates-io.s3-us-west-1.amazonaws.com/crates/syn/syn-1.0.35.crate",
         type = "tar.gz",
-        sha256 = "e8d5d96e8cbb005d6959f119f773bfaebb5684296108fb32600c00cde305b2cd",
-        strip_prefix = "syn-1.0.33",
-        build_file = Label("//kythe/rust/indexer/cargo/remote:syn-1.0.33.BUILD"),
+        sha256 = "fb7f4c519df8c117855e19dd8cc851e89eb746fe7a73f0157e0d95fdec5369b0",
+        strip_prefix = "syn-1.0.35",
+        build_file = Label("//kythe/rust/indexer/cargo/remote:syn-1.0.35.BUILD"),
     )
 
     _new_http_archive(

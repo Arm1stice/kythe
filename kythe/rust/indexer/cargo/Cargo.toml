@@ -30,7 +30,6 @@ rls-data = "0.19.0"
 rls-analysis = "0.18.1"
 tempfile = "3.1.0"
 anyhow = "1.0"
-lazy_static = "1.4.0"
 
 [raze]
 workspace_path = "//kythe/rust/indexer/cargo"
@@ -48,5 +47,5 @@ patch_args = ["-p1"]
 [raze.crates.bzip2-sys.'0.1.9+1.0.8']
 gen_buildrs = true
 
-[raze.crates.proc-macro2.'1.0.18']
+[raze.crates.proc-macro2.'1.0.19']
 gen_buildrs = true

@@ -32,7 +32,7 @@ rust_library(
     crate_type = "lib",
     deps = [
         "@raze__cfg_if__0_1_10//:cfg_if",
-        "@raze__libc__0_2_71//:libc",
+        "@raze__libc__0_2_73//:libc",
         "@raze__rand__0_7_3//:rand",
         "@raze__remove_dir_all__0_5_3//:remove_dir_all",
     ],
@@ -43,6 +43,7 @@ rust_library(
         "--cap-lints=allow",
     ],
     version = "3.1.0",
+    tags = ["cargo-raze"],
     crate_features = [
     ],
 )

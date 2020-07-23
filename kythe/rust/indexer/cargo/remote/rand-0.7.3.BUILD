@@ -33,7 +33,7 @@ rust_library(
     crate_type = "lib",
     deps = [
         "@raze__getrandom__0_1_14//:getrandom",
-        "@raze__libc__0_2_71//:libc",
+        "@raze__libc__0_2_73//:libc",
         "@raze__rand_chacha__0_2_2//:rand_chacha",
         "@raze__rand_core__0_5_1//:rand_core",
     ],
@@ -44,6 +44,7 @@ rust_library(
         "--cap-lints=allow",
     ],
     version = "0.7.3",
+    tags = ["cargo-raze"],
     crate_features = [
         "alloc",
         "default",

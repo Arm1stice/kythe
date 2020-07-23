@@ -26,12 +26,10 @@ impl<'a> EntryEmitter<'a> {
         Self { writer }
     }
 
-    /// Takes a file name, fact name, and fact value. Creates a node with the
-    /// provided information and writes it to the KytheWriter.
+    /// Creates a node with the provided arguments and emits it.
     ///
     /// # Errors
-    /// If an error occurs while writing the entry, a [KytheError::WriterError]
-    /// is returned.
+    /// If an error occurs while writing the entry, an error is returned.
     pub fn emit_node(
         &mut self,
         vname: &VName,
@@ -46,6 +44,10 @@ impl<'a> EntryEmitter<'a> {
         self.writer.write_entry(entry)
     }
 
+    /// Creates an edge of edge_kind between the source and target and emits it.
+    ///
+    /// # Errors
+    /// If an error occurs while writing the entry, an error is returned.
     pub fn emit_edge(
         &mut self,
         source: &VName,
@@ -60,6 +62,10 @@ impl<'a> EntryEmitter<'a> {
         self.writer.write_entry(entry)
     }
 
+    /// Creates an anchor node with defines/binding edge to the target and emits it.
+    ///
+    /// # Errors
+    /// If an error occurs while writing the entry, an error is returned.
     pub fn emit_anchor(
         &mut self,
         anchor_vname: &VName,
