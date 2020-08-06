@@ -81,3 +81,8 @@ rust_indexer_test(
     srcs = ["testdata/function.rs"],
 )
 
+rust_indexer_test(
+    name = "tbuiltin_test",
+    srcs = ["testdata/tbuiltin.rs"],
+)
+

@@ -94,6 +94,52 @@ impl<'a> UnitAnalyzer<'a> {
         Ok(())
     }
 
+    /// Emits tbuiltin nodes for all of the Rust built-in types
+    pub fn emit_tbuiltin_nodes(&mut self) -> Result<(), KytheError> {
+        let builtin_types = vec![
+            "array",
+            "bool",
+            "char",
+            "closure",
+            "enum",
+            "f32",
+            "f64",
+            "i8",
+            "i16",
+            "i32",
+            "i64",
+            "i128",
+            "isize",
+            "never",
+            "reference",
+            "slice",
+            "str",
+            "trait",
+            "tuple",
+            "u8",
+            "u16",
+            "u32",
+            "u64",
+            "u128",
+            "union",
+            "usize",
+        ];
+
+        let mut vname_template = VName::new();
+        vname_template.set_corpus("std".to_string());
+        vname_template.set_root("".to_string());
+        vname_template.set_path("".to_string());
+        vname_template.set_language("rust".to_string());
+
+        for builtin in builtin_types.iter() {
+            let mut type_vname = vname_template.clone();
+            type_vname.set_signature(format!("{}#builtin", builtin));
+            self.emitter.emit_node(&type_vname, "/kythe/node/kind", b"tbuiltin".to_vec())?;
+        }
+
+        Ok(())
+    }
+
     /// Indexes the provided crate
     pub fn index_crate(&mut self, krate: Crate) -> Result<(), KytheError> {
         let mut crate_analyzer = CrateAnalyzer::new(

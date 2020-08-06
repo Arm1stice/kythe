@@ -46,6 +46,9 @@ impl<'a> KytheIndexer<'a> {
         // First, create file nodes for all of the source files in the CompilationUnit
         generator.emit_file_nodes()?;
 
+        // Emit the nodes for the builtin types
+        generator.emit_tbuiltin_nodes()?;
+
         // Then, index all of the crates from the save_analysis
         let analyzed_crates = save_analysis::load_analysis(&root_dir.join("analysis"));
         for krate in analyzed_crates {
