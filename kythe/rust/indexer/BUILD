@@ -89,3 +89,8 @@ rust_indexer_test(
     name = "modules_test",
     srcs = glob(["testdata/modules/*"]),
 )
+
+rust_indexer_test(
+    name = "struct_test",
+    srcs = ["testdata/struct.rs"],
+)

@@ -29,28 +29,53 @@ use storage_rust_proto::*;
 
 /// A data structure to analyze and index CompilationUnit protobufs
 pub struct UnitAnalyzer<'a> {
+    // The CompilationUnit being analyzed
     unit: &'a CompilationUnit,
+    // The storage_rust_proto VName for the CompilationUnit
     unit_storage_vname: VName,
+    // The emitter used to  write generated nodes and edges
     emitter: EntryEmitter<'a>,
+    // The root directory for the source files
     root_dir: &'a PathBuf,
+    // A map between a file name and it's Kythe VName
     file_vnames: HashMap<String, VName>,
+    // An index for computing byte offsets in files based on line and column number
     offset_index: OffsetIndex,
 }
 
 /// A data structure to analyze and index individual crates
 pub struct CrateAnalyzer<'a, 'b> {
+    // The emitter used to  write generated nodes and edges
     emitter: &'b mut EntryEmitter<'a>,
+    // A map between a file name and it's Kythe VName
     file_vnames: &'b HashMap<String, VName>,
+    // The current CompilationUnit's VName
     unit_vname: &'b VName,
+    // The current crate being analyzed
     krate: Crate,
+    // A map between a crate's identifier and a string consisting of
+    // "<disambiguator1>_<disambiguator2>"
     krate_ids: HashMap<u32, String>,
+    // The crate's VName
     krate_vname: VName,
     // Stores the parent of a child definition so that a childof edge can be emitted when the
     // child's definition is analyzed
     children_ids: HashMap<rls_data::Id, VName>,
     // Stores VNames for emitted definitions based on definition Id
     definition_vnames: HashMap<rls_data::Id, VName>,
+    // An index for computing byte offsets in files based on line and column number
     offset_index: &'b OffsetIndex,
+    // An index for mapping a method's definition Id to what it is implementing
+    method_index: HashMap<rls_data::Id, MethodImpl>,
+}
+
+/// A data struct to keep track of method implementations. Used in a HashMap to
+/// map a method definition Id to it's struct and corresponding trait.
+pub struct MethodImpl {
+    // The struct definition Id the method is being implemented on
+    pub struct_target: rls_data::Id,
+    // The trait definition Id, if any, this is being implemented for
+    pub trait_target: Option<rls_data::Id>,
 }
 
 impl<'a> UnitAnalyzer<'a> {
@@ -119,6 +144,7 @@ impl<'a> UnitAnalyzer<'a> {
             &self.offset_index,
         );
         crate_analyzer.emit_crate_nodes()?;
+        crate_analyzer.process_implementations()?;
         crate_analyzer.emit_definitions()?;
         // TODO(Arm1stice): Emit references and implementations
         Ok(())
@@ -159,7 +185,17 @@ impl<'a, 'b> CrateAnalyzer<'a, 'b> {
             children_ids: HashMap::new(),
             definition_vnames: HashMap::new(),
             offset_index,
+            method_index: HashMap::new(),
         }
+    }
+
+    /// Given a signature, generates a VName for a crate based on the VName of
+    /// the CompilationUnit
+    fn generate_crate_vname(&self, signature: &str) -> VName {
+        let mut crate_v_name = self.unit_vname.clone();
+        crate_v_name.set_signature(signature.to_string());
+        crate_v_name.set_language("rust".to_string());
+        crate_v_name
     }
 
     /// Generates and emits package nodes for the main crate and external crates
@@ -192,6 +228,92 @@ impl<'a, 'b> CrateAnalyzer<'a, 'b> {
         }
 
         Ok(())
+    }
+
+    /// Creates the internal `method_index` by analyzing the implementations and
+    /// relations on the save_analysis.
+    ///
+    /// Must be called before "emit_definitions"
+    pub fn process_implementations(&mut self) -> Result<(), KytheError> {
+        // Create a HashMap mapping the implementation Id to the implementation
+        // It might be a safe assumption that the index is the Id, but we can't be too
+        // careful
+        let impls = self.krate.analysis.impls.clone();
+        let mut impl_map: HashMap<u32, rls_data::Impl> = HashMap::new();
+        for implementation in impls.iter() {
+            impl_map.insert(implementation.id, implementation.clone());
+        }
+        // Drop the cloned vector to save memory
+        drop(impls);
+
+        // Create a HashMap betwen a method definition Id and the struct and trait being
+        // implemented on
+        let mut method_index: HashMap<rls_data::Id, MethodImpl> = HashMap::new();
+        let relations = &self.krate.analysis.relations;
+        for relation in relations.iter() {
+            // If this is an implementation relation
+            if let rls_data::RelationKind::Impl { id: impl_id, .. } = relation.kind {
+                let implementation = impl_map.get(&impl_id).ok_or_else(|| {
+                    KytheError::IndexerError(format!(
+                        "Couldn't find implementation for relation {:?}",
+                        relation
+                    ))
+                })?;
+                // Add all of the childred to the HashMap
+                for child in implementation.children.iter() {
+                    // The struct being implemented on
+                    let struct_target = relation.from;
+                    // The optional trait being implemented on
+                    let trait_target =
+                        if relation.to.krate != 4294967295 { Some(relation.to) } else { None };
+                    method_index.insert(*child, MethodImpl { struct_target, trait_target });
+                }
+            }
+        }
+        self.method_index = method_index;
+        Ok(())
+    }
+
+    /// Given a definition for a module, returns the byte span
+    /// for the module definition
+    ///
+    /// # Notes:
+    /// If the definition provided isn't for a module, `false` is returned.
+    /// If the span file name is called `mod.rs` but there is no parent
+    /// directory, `false` is returned.
+    fn is_module_implicit(&self, def: &Def) -> bool {
+        // Ensure that this defition is for a module
+        if def.kind != DefKind::Mod {
+            return false;
+        }
+
+        // Check if this is the primary module of the crate. If so, the module starts at
+        // the top of the file
+        if def.qualname == "::" {
+            return true;
+        }
+
+        let file_path = def.span.file_name.clone();
+
+        // The name we expect if the module definition is the file itself
+        let expected_name: String;
+
+        // If the file name is mod.rs, then the expected name is the directory name
+        if Some(OsStr::new("mod.rs")) == file_path.file_name() {
+            if let Some(parent_directory) = file_path.parent() {
+                expected_name = parent_directory.file_name().unwrap().to_str().unwrap().to_string();
+            } else {
+                // This should only happen if there is something wrong with the file path we
+                // were provided in the CompilationUnit
+                return false;
+            }
+        } else {
+            // Get the file name without the extension and convert to a string
+            expected_name = file_path.file_stem().unwrap().to_str().unwrap().to_string();
+        }
+
+        // If the names match, the module definition is implicit
+        def.name == expected_name
     }
 
     /// Emit Kythe graph information for the definitions in the crate
@@ -246,14 +368,20 @@ impl<'a, 'b> CrateAnalyzer<'a, 'b> {
     /// Emit all of the Kythe graph nodes and edges, including anchors for the
     /// definition using the provided VName
     fn emit_definition_node(&mut self, def_vname: &VName, def: &Def) -> Result<(), KytheError> {
-        // Track children to emit childof nodes later
-        for child in def.children.iter() {
-            if let Some(child_vname) = self.definition_vnames.get(child) {
-                // The child definition has already been visited and we can emit the childof
-                // edge now
-                self.emitter.emit_edge(child_vname, def_vname, "/kythe/edge/childof")?;
-            } else {
-                self.children_ids.insert(*child, def_vname.clone());
+        // For Fields, we always emit childof edges to their
+        // parent because TupleVariant definitions don't have their fields as children.
+        // Structs have their fields listed as children so the facts would duplicate if
+        // we didn't have this `if` statement
+        if def.kind != DefKind::Struct {
+            // Track children to emit childof nodes later
+            for child in def.children.iter() {
+                if let Some(child_vname) = self.definition_vnames.get(child) {
+                    // The child definition has already been visited and we can emit the childof
+                    // edge now
+                    self.emitter.emit_edge(child_vname, def_vname, "/kythe/edge/childof")?;
+                } else {
+                    self.children_ids.insert(*child, def_vname.clone());
+                }
             }
         }
 
@@ -297,8 +425,32 @@ impl<'a, 'b> CrateAnalyzer<'a, 'b> {
                 }
             }
             DefKind::Function => {
+                // TODO: Handle parameters, emit a defines edge on the entire definition span of
+                // the function
                 facts.push(("/kythe/node/kind", b"function"));
                 facts.push(("/kythe/complete", b"definition"));
+            }
+            DefKind::Method => {
+                // TODO: Handle parameters, emit a defines edge on the entire definition span of
+                // the method
+                facts.push(("/kythe/node/kind", b"function"));
+                facts.push(("/kythe/complete", b"definition"));
+
+                // Emit childof edge to parent struct
+                let method_impl = self.method_index.remove(&def.id).ok_or_else(|| {
+                    KytheError::IndexerError(format!(
+                        "Failed to identify parent struct for method {:?}",
+                        def.id
+                    ))
+                })?;
+                let parent_vname =
+                    self.definition_vnames.get(&method_impl.struct_target).ok_or_else(|| {
+                        KytheError::IndexerError(format!(
+                            "Failed to vname for parent {:?} of method {:?}",
+                            method_impl.struct_target, def.id,
+                        ))
+                    })?;
+                self.emitter.emit_edge(def_vname, parent_vname, "/kythe/edge/childof")?;
             }
             DefKind::Mod => {
                 facts.push(("/kythe/node/kind", b"record"));
@@ -308,6 +460,11 @@ impl<'a, 'b> CrateAnalyzer<'a, 'b> {
                 if def.qualname == "::" {
                     self.emitter.emit_edge(def_vname, &self.krate_vname, "/kythe/edge/childof")?;
                 }
+            }
+            DefKind::Struct => {
+                facts.push(("/kythe/node/kind", b"record"));
+                facts.push(("/kythe/complete", b"definition"));
+                facts.push(("/kythe/subkind", b"struct"));
             }
             // Struct inside an enum
             DefKind::StructVariant => {
@@ -388,57 +545,6 @@ impl<'a, 'b> CrateAnalyzer<'a, 'b> {
         }
 
         Ok(())
-    }
-
-    /// Given a signature, generates a VName for a crate based on the VName of
-    /// the CompilationUnit
-    fn generate_crate_vname(&self, signature: &str) -> VName {
-        let mut crate_v_name = self.unit_vname.clone();
-        crate_v_name.set_signature(signature.to_string());
-        crate_v_name.set_language("rust".to_string());
-        crate_v_name
-    }
-
-    /// Given a definition for a module, returns the byte span
-    /// for the module definition
-    ///
-    /// # Notes:
-    /// If the definition provided isn't for a module, `false` is returned.
-    /// If the span file name is called `mod.rs` but there is no parent
-    /// directory, `false` is returned.
-    fn is_module_implicit(&self, def: &Def) -> bool {
-        // Ensure that this defition is for a module
-        if def.kind != DefKind::Mod {
-            return false;
-        }
-
-        // Check if this is the primary module of the crate. If so, the module starts at
-        // the top of the file
-        if def.qualname == "::" {
-            return true;
-        }
-
-        let file_path = def.span.file_name.clone();
-
-        // The name we expect if the module definition is the file itself
-        let expected_name: String;
-
-        // If the file name is mod.rs, then the expected name is the directory name
-        if Some(OsStr::new("mod.rs")) == file_path.file_name() {
-            if let Some(parent_directory) = file_path.parent() {
-                expected_name = parent_directory.file_name().unwrap().to_str().unwrap().to_string();
-            } else {
-                // This should only happen if there is something wrong with the file path we
-                // were provided in the CompilationUnit
-                return false;
-            }
-        } else {
-            // Get the file name without the extension and convert to a string
-            expected_name = file_path.file_stem().unwrap().to_str().unwrap().to_string();
-        }
-
-        // If the names match, the module definition is implicit
-        def.name == expected_name
     }
 }
 
