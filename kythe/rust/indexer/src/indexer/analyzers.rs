@@ -76,6 +76,8 @@ pub struct CrateAnalyzer<'a, 'b> {
     // TODO: Remove dead_code override once references are implemented
     #[allow(dead_code)]
     incomplete_definitions: HashSet<rls_data::Id>,
+    // A vector of the strings of builtin types
+    builtin_types: Vec<String>,
 }
 
 /// A data struct to keep track of method implementations. Used in a HashMap to
@@ -153,6 +155,7 @@ impl<'a> UnitAnalyzer<'a> {
             &self.offset_index,
         );
         crate_analyzer.emit_crate_nodes()?;
+        crate_analyzer.emit_tbuiltin_nodes()?;
         crate_analyzer.process_implementations()?;
         crate_analyzer.emit_definitions()?;
         // TODO(Arm1stice): Emit references and implementations
@@ -184,6 +187,35 @@ impl<'a, 'b> CrateAnalyzer<'a, 'b> {
         krate: Crate,
         offset_index: &'b OffsetIndex,
     ) -> Self {
+        let types = vec![
+            "array",
+            "bool",
+            "char",
+            "closure",
+            "enum",
+            "f32",
+            "f64",
+            "i8",
+            "i16",
+            "i32",
+            "i64",
+            "i128",
+            "isize",
+            "never",
+            "reference",
+            "slice",
+            "str",
+            "trait",
+            "tuple",
+            "u8",
+            "u16",
+            "u32",
+            "u64",
+            "u128",
+            "usize",
+        ];
+        let builtin_types: Vec<String> = types.iter().map(|t| t.to_string()).collect();
+
         Self {
             emitter,
             file_vnames,
@@ -198,6 +230,7 @@ impl<'a, 'b> CrateAnalyzer<'a, 'b> {
             trait_children: HashMap::new(),
             trait_methods: HashMap::new(),
             incomplete_definitions: HashSet::new(),
+            builtin_types,
         }
     }
 
@@ -237,6 +270,23 @@ impl<'a, 'b> CrateAnalyzer<'a, 'b> {
             let krate_vname = self.generate_crate_vname(&krate_signature);
             self.emitter.emit_node(&krate_vname, "/kythe/node/kind", b"package".to_vec())?;
             self.krate_ids.insert((krate_num + 1) as u32, krate_signature);
+        }
+
+        Ok(())
+    }
+
+    /// Emits tbuiltin nodes for all of the Rust built-in types
+    pub fn emit_tbuiltin_nodes(&mut self) -> Result<(), KytheError> {
+        let mut vname_template = VName::new();
+        vname_template.set_corpus("std".to_string());
+        vname_template.set_root("".to_string());
+        vname_template.set_path("".to_string());
+        vname_template.set_language("rust".to_string());
+
+        for builtin in self.builtin_types.iter() {
+            let mut type_vname = vname_template.clone();
+            type_vname.set_signature(format!("{}#builtin", builtin));
+            self.emitter.emit_node(&type_vname, "/kythe/node/kind", b"tbuiltin".to_vec())?;
         }
 
         Ok(())

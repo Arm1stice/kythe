@@ -96,6 +96,11 @@ rust_indexer_test(
 )
 
 rust_indexer_test(
+    name = "tbuiltin_test",
+    srcs = ["testdata/tbuiltin.rs"],
+)
+
+rust_indexer_test(
     name = "trait_test",
     srcs = ["testdata/trait.rs"],
 )
