@@ -76,8 +76,8 @@ pub struct CrateAnalyzer<'a, 'b> {
     // TODO: Remove dead_code override once references are implemented
     #[allow(dead_code)]
     incomplete_definitions: HashSet<rls_data::Id>,
-    // A vector of the strings of builtin types
-    builtin_types: Vec<String>,
+    // A map from type names to their vnames
+    type_vnames: HashMap<String, VName>,
 }
 
 /// A data struct to keep track of method implementations. Used in a HashMap to
@@ -187,6 +187,7 @@ impl<'a, 'b> CrateAnalyzer<'a, 'b> {
         krate: Crate,
         offset_index: &'b OffsetIndex,
     ) -> Self {
+        // Initialize the type_vnames HashMap with builtin types
         let types = vec![
             "array",
             "bool",
@@ -214,7 +215,17 @@ impl<'a, 'b> CrateAnalyzer<'a, 'b> {
             "u128",
             "usize",
         ];
-        let builtin_types: Vec<String> = types.iter().map(|t| t.to_string()).collect();
+        let mut type_vnames: HashMap<String, VName> = HashMap::new();
+        let mut vname_template = VName::new();
+        vname_template.set_corpus("std".to_string());
+        vname_template.set_root("".to_string());
+        vname_template.set_path("".to_string());
+        vname_template.set_language("rust".to_string());
+        for t in types.iter() {
+            let mut type_vname = vname_template.clone();
+            type_vname.set_signature(format!("{}#builtin", t));
+            type_vnames.insert(t.to_string(), type_vname);
+        }
 
         Self {
             emitter,
@@ -230,7 +241,7 @@ impl<'a, 'b> CrateAnalyzer<'a, 'b> {
             trait_children: HashMap::new(),
             trait_methods: HashMap::new(),
             incomplete_definitions: HashSet::new(),
-            builtin_types,
+            type_vnames,
         }
     }
 
@@ -277,16 +288,8 @@ impl<'a, 'b> CrateAnalyzer<'a, 'b> {
 
     /// Emits tbuiltin nodes for all of the Rust built-in types
     pub fn emit_tbuiltin_nodes(&mut self) -> Result<(), KytheError> {
-        let mut vname_template = VName::new();
-        vname_template.set_corpus("std".to_string());
-        vname_template.set_root("".to_string());
-        vname_template.set_path("".to_string());
-        vname_template.set_language("rust".to_string());
-
-        for builtin in self.builtin_types.iter() {
-            let mut type_vname = vname_template.clone();
-            type_vname.set_signature(format!("{}#builtin", builtin));
-            self.emitter.emit_node(&type_vname, "/kythe/node/kind", b"tbuiltin".to_vec())?;
+        for vname in self.type_vnames.values() {
+            self.emitter.emit_node(vname, "/kythe/node/kind", b"tbuiltin".to_vec())?;
         }
 
         Ok(())
@@ -594,6 +597,15 @@ impl<'a, 'b> CrateAnalyzer<'a, 'b> {
                     facts.push(("/kythe/node/kind", b"record"));
                     facts.push(("/kythe/complete", b"definition"));
                     facts.push(("/kythe/subkind", b"tuplevariant"));
+                }
+            }
+            DefKind::Type => {
+                facts.push(("/kythe/node/kind", b"talias"));
+
+                // If it aliases a builtin type, emit an aliases edge
+                // TODO: Make this work with custom types
+                if let Some(type_vname) = self.type_vnames.get(&def.value) {
+                    self.emitter.emit_edge(def_vname, type_vname, "/kythe/edge/aliases")?;
                 }
             }
             DefKind::Union => {

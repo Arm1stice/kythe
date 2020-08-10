@@ -106,6 +106,11 @@ rust_indexer_test(
 )
 
 rust_indexer_test(
+    name = "type_test",
+    srcs = ["testdata/type.rs"],
+)
+
+rust_indexer_test(
     name = "union_test",
     srcs = ["testdata/union.rs"],
 )
