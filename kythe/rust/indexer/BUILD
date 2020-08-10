@@ -94,3 +94,8 @@ rust_indexer_test(
     name = "struct_test",
     srcs = ["testdata/struct.rs"],
 )
+
+rust_indexer_test(
+    name = "trait_test",
+    srcs = ["testdata/trait.rs"],
+)

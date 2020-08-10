@@ -67,6 +67,11 @@ pub struct CrateAnalyzer<'a, 'b> {
     offset_index: &'b OffsetIndex,
     // An index for mapping a method's definition Id to what it is implementing
     method_index: HashMap<rls_data::Id, MethodImpl>,
+    // A temporary map from a method definition Id to the trait the method is in
+    trait_children: HashMap<rls_data::Id, rls_data::Id>,
+    // A map from a tuple of (trait definition Id, method name) to the method's VName. Used to
+    // create `overrides` edges
+    trait_methods: HashMap<(rls_data::Id, String), VName>,
 }
 
 /// A data struct to keep track of method implementations. Used in a HashMap to
@@ -186,6 +191,8 @@ impl<'a, 'b> CrateAnalyzer<'a, 'b> {
             definition_vnames: HashMap::new(),
             offset_index,
             method_index: HashMap::new(),
+            trait_children: HashMap::new(),
+            trait_methods: HashMap::new(),
         }
     }
 
@@ -436,21 +443,38 @@ impl<'a, 'b> CrateAnalyzer<'a, 'b> {
                 facts.push(("/kythe/node/kind", b"function"));
                 facts.push(("/kythe/complete", b"definition"));
 
-                // Emit childof edge to parent struct
-                let method_impl = self.method_index.remove(&def.id).ok_or_else(|| {
-                    KytheError::IndexerError(format!(
-                        "Failed to identify parent struct for method {:?}",
-                        def.id
-                    ))
-                })?;
-                let parent_vname =
-                    self.definition_vnames.get(&method_impl.struct_target).ok_or_else(|| {
-                        KytheError::IndexerError(format!(
-                            "Failed to vname for parent {:?} of method {:?}",
-                            method_impl.struct_target, def.id,
-                        ))
-                    })?;
-                self.emitter.emit_edge(def_vname, parent_vname, "/kythe/edge/childof")?;
+                // If the if-statement logic passes, this is a method on a struct. Otherwise, it
+                // is a method on a trait
+                if let Some(method_impl) = self.method_index.remove(&def.id) {
+                    // Emit a childof edge to the parent struct
+                    let parent_vname = self
+                        .definition_vnames
+                        .get(&method_impl.struct_target)
+                        .ok_or_else(|| {
+                            KytheError::IndexerError(format!(
+                                "Failed to vname for parent {:?} of method {:?}",
+                                method_impl.struct_target, def.id,
+                            ))
+                        })?;
+                    self.emitter.emit_edge(def_vname, parent_vname, "/kythe/edge/childof")?;
+
+                    // If this method of part of a trait implementation, emit an overrides edge
+                    if let Some(trait_id) = &method_impl.trait_target {
+                        let method_vname = self.trait_methods.get(&(*trait_id, def.name.to_string()))
+                        .ok_or_else(|| KytheError::IndexerError(
+                                format!("Method {:?} is implementing a trait method {} but the method's vname can't be found in self.trait_methods", def.id, def.name)
+                        ))?;
+                        self.emitter.emit_edge(def_vname, method_vname, "/kythe/edge/overrides")?;
+                    }
+                } else {
+                    // Remove the method from the temporary trait_children HashMap and add to the
+                    // trait_methods HashMap
+                    let trait_id = self.trait_children.remove(&def.id)
+                        .ok_or_else(|| KytheError::IndexerError(
+                            format!("Method {:?} is part of a trait but is not present in self.trait_children", def.id)
+                    ))?;
+                    self.trait_methods.insert((trait_id, def.name.to_string()), def_vname.clone());
+                }
             }
             DefKind::Mod => {
                 facts.push(("/kythe/node/kind", b"record"));
@@ -471,6 +495,14 @@ impl<'a, 'b> CrateAnalyzer<'a, 'b> {
                 facts.push(("/kythe/node/kind", b"record"));
                 facts.push(("/kythe/complete", b"definition"));
                 facts.push(("/kythe/subkind", b"structvariant"));
+            }
+            DefKind::Trait => {
+                facts.push(("/kythe/node/kind", b"interface"));
+
+                // Add the child methods of the trait to the trait_children HashMap
+                for child in def.children.iter() {
+                    self.trait_children.insert(*child, def.id);
+                }
             }
             // Tuple inside an enum. Has 0 or more parameters and includes constants
             DefKind::TupleVariant => {

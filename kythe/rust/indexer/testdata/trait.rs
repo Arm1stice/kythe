@@ -1,0 +1,19 @@
+//- @TestTrait defines/binding Trait
+//- Trait.node/kind interface
+trait TestTrait {
+    //- @test_method defines/binding TestMethod
+    //- TestMethod childof Trait
+    fn test_method() {}
+}
+
+//- @TestStruct defines/binding Struct
+struct TestStruct {}
+
+impl TestTrait for TestStruct {
+    //- @test_method defines/binding ImplMethod
+    //- ImplMethod childof Struct
+    //- ImplMethod overrides TestMethod
+    fn test_method() {}
+}
+
+fn main() {}
