@@ -99,3 +99,8 @@ rust_indexer_test(
     name = "trait_test",
     srcs = ["testdata/trait.rs"],
 )
+
+rust_indexer_test(
+    name = "variable_test",
+    srcs = ["testdata/variable.rs"],
+)

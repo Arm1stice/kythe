@@ -21,7 +21,7 @@ use super::offset::OffsetIndex;
 use analysis_rust_proto::CompilationUnit;
 use rls_analysis::Crate;
 use rls_data::{Def, DefKind};
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use std::ffi::OsStr;
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -72,6 +72,10 @@ pub struct CrateAnalyzer<'a, 'b> {
     // A map from a tuple of (trait definition Id, method name) to the method's VName. Used to
     // create `overrides` edges
     trait_methods: HashMap<(rls_data::Id, String), VName>,
+    // A HashSet of definition ids for incomplete variable definitions
+    // TODO: Remove dead_code override once references are implemented
+    #[allow(dead_code)]
+    incomplete_definitions: HashSet<rls_data::Id>,
 }
 
 /// A data struct to keep track of method implementations. Used in a HashMap to
@@ -193,6 +197,7 @@ impl<'a, 'b> CrateAnalyzer<'a, 'b> {
             method_index: HashMap::new(),
             trait_children: HashMap::new(),
             trait_methods: HashMap::new(),
+            incomplete_definitions: HashSet::new(),
         }
     }
 
@@ -406,6 +411,9 @@ impl<'a, 'b> CrateAnalyzer<'a, 'b> {
 
         // Generate the facts to be emitted and emit some edges as necessary
         match def.kind {
+            DefKind::Const | DefKind::Static => {
+                facts.push(("/kythe/node/kind", b"constant"));
+            }
             DefKind::Enum => {
                 facts.push(("/kythe/node/kind", b"sum"));
                 facts.push(("/kythe/complete", b"definition"));
@@ -436,6 +444,20 @@ impl<'a, 'b> CrateAnalyzer<'a, 'b> {
                 // the function
                 facts.push(("/kythe/node/kind", b"function"));
                 facts.push(("/kythe/complete", b"definition"));
+            }
+            DefKind::Local => {
+                facts.push(("/kythe/node/kind", b"variable"));
+                facts.push(("/kythe/subkind", b"local"));
+
+                // TODO: Find a way to determine if a variable is only being
+                // declared. The save_analysis uses different index offsets for
+                // difference classes of local variables. One class is for
+                // mutable variables, one is for immutable variables, and one is
+                // for declarations. However these aren't static offsets, they
+                // are based on how many classes were previously seen. The first
+                // class that is seen has an offset of ~2147483647, the second
+                // has an offset of ~1073741827, and the third has an offset of
+                // ~3221225471.
             }
             DefKind::Method => {
                 // TODO: Handle parameters, emit a defines edge on the entire definition span of
