@@ -22,9 +22,7 @@ fn main() {
 
     //- @_test_closure defines/binding Closure
     //- Closure.node/kind function
-    //- @closure_variable defines/binding ClosureVariable
+    //- @#0closure_variable defines/binding ClosureVariable
     //- ClosureVariable.node/kind variable
-    let _test_closure = |closure_variable: i32| -> i32 {
-        closure_variable + 1
-    };
+    let _test_closure = |closure_variable: i32| -> i32 { closure_variable + 1 };
 }

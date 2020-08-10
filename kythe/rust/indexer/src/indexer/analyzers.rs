@@ -382,9 +382,9 @@ impl<'a, 'b> CrateAnalyzer<'a, 'b> {
     fn emit_definition_node(&mut self, def_vname: &VName, def: &Def) -> Result<(), KytheError> {
         // For Fields, we always emit childof edges to their
         // parent because TupleVariant definitions don't have their fields as children.
-        // Structs have their fields listed as children so the facts would duplicate if
-        // we didn't have this `if` statement
-        if def.kind != DefKind::Struct {
+        // Structs and Unions have their fields listed as children so the facts would
+        // duplicate if we didn't have this `if` statement
+        if def.kind != DefKind::Struct && def.kind != DefKind::Union {
             // Track children to emit childof nodes later
             for child in def.children.iter() {
                 if let Some(child_vname) = self.definition_vnames.get(child) {
@@ -545,6 +545,11 @@ impl<'a, 'b> CrateAnalyzer<'a, 'b> {
                     facts.push(("/kythe/complete", b"definition"));
                     facts.push(("/kythe/subkind", b"tuplevariant"));
                 }
+            }
+            DefKind::Union => {
+                facts.push(("/kythe/node/kind", b"record"));
+                facts.push(("/kythe/complete", b"definition"));
+                facts.push(("/kythe/subkind", b"union"));
             }
             // TODO(Arm1stice): Support other types of definitions
             _ => {}

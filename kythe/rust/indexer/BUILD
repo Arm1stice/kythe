@@ -101,6 +101,11 @@ rust_indexer_test(
 )
 
 rust_indexer_test(
+    name = "union_test",
+    srcs = ["testdata/union.rs"],
+)
+
+rust_indexer_test(
     name = "variable_test",
     srcs = ["testdata/variable.rs"],
 )
