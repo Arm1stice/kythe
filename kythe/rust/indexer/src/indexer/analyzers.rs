@@ -446,8 +446,14 @@ impl<'a, 'b> CrateAnalyzer<'a, 'b> {
                 facts.push(("/kythe/complete", b"definition"));
             }
             DefKind::Local => {
-                facts.push(("/kythe/node/kind", b"variable"));
-                facts.push(("/kythe/subkind", b"local"));
+                // If the variable is a closure, emit that it is a function
+                if def.value.contains("closure@") {
+                    facts.push(("/kythe/node/kind", b"function"));
+                    facts.push(("/kythe/complete", b"definition"));
+                } else {
+                    facts.push(("/kythe/node/kind", b"variable"));
+                    facts.push(("/kythe/subkind", b"local"));
+                }
 
                 // TODO: Find a way to determine if a variable is only being
                 // declared. The save_analysis uses different index offsets for

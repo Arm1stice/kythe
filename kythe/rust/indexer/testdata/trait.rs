@@ -1,3 +1,5 @@
+// Verifies that traits are properly handled by the indexer
+
 //- @TestTrait defines/binding Trait
 //- Trait.node/kind interface
 trait TestTrait {
@@ -6,6 +8,7 @@ trait TestTrait {
     fn test_method() {}
 }
 
+#[allow(dead_code)]
 //- @TestStruct defines/binding Struct
 struct TestStruct {}
 

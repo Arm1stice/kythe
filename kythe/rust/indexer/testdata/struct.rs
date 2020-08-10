@@ -1,3 +1,5 @@
+// Verifies that structs are properly handled by the indexer
+
 //- @TestStruct defines/binding Struct
 //- Struct.node/kind record
 //- Struct.complete definition

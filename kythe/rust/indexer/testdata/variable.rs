@@ -1,3 +1,5 @@
+// Verifies that variables and closures are properly handled by the indexer
+
 //- @_TEST_CONSTANT defines/binding Constant
 //- Constant.node/kind constant
 const _TEST_CONSTANT: u32 = 0;
@@ -17,4 +19,12 @@ fn main() {
     //- Decl.node/kind variable
     //- Decl.subkind local
     let _test_declaration: u32;
+
+    //- @_test_closure defines/binding Closure
+    //- Closure.node/kind function
+    //- @closure_variable defines/binding ClosureVariable
+    //- ClosureVariable.node/kind variable
+    let _test_closure = |closure_variable: i32| -> i32 {
+        closure_variable + 1
+    };
 }
